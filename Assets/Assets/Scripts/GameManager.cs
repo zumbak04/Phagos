@@ -6,9 +6,6 @@ public class GameManager : MonoBehaviour
 {
     public static GameManager instance = null;
 
-    public GameObject bacterium;
-    public GameObject foodPrefab;
-
     public Vector2 gameArea;
     public int StartNumberOfFood = 1000;
     public int StartNumberOfBacteria = 100;
@@ -62,7 +59,7 @@ public class GameManager : MonoBehaviour
 
     public Bacterium SpawnBacterium(Vector2 spawnPoint, Genome genome)
     {
-        GameObject newObject = Instantiate(bacterium, spawnPoint, Quaternion.identity);
+        GameObject newObject = Instantiate(GameAssets.instance.bacterium, spawnPoint, Quaternion.identity);
         Bacterium newBacterium = newObject.GetComponent<Bacterium>();
         newBacterium.Init(genome);
 
@@ -75,7 +72,7 @@ public class GameManager : MonoBehaviour
     }
     public void SpawnFood(Vector2 spawnPoint)
     {
-        GameObject food = Instantiate(foodPrefab, spawnPoint, Quaternion.identity);
+        GameObject food = Instantiate(GameAssets.instance.food, spawnPoint, Quaternion.identity);
 
         food.name = $"Food";
         food.transform.SetParent(foodHolder);
