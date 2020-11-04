@@ -21,4 +21,16 @@ public class Skill
         staticMinSkill = minSkill;
         staticMaxSkill = maxSkill;
     }
+
+    public float skillPercent
+    {
+        get
+        {
+            return currentSkill / maxSkill;
+        }
+        set
+        {
+            currentSkill = value * maxSkill;
+        }
+    }
 }
