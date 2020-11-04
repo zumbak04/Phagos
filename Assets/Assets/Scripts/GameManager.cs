@@ -19,7 +19,7 @@ public class GameManager : MonoBehaviour
     Transform foodHolder;
     Transform bacteriumHolder;
 
-    void Awake()
+    void Start()
     {
         if (instance == null)
             instance = this;

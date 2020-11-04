@@ -13,7 +13,7 @@ public class Bacterium : MonoBehaviour
     [SerializeField]
     float divisionEnergy = 15f;
 
-    static float immunityTimerMax = 0.1f;
+    static float immunityTimerMax = 0.01f;
     [SerializeField]
     float immunityTimer = immunityTimerMax;
 
@@ -32,11 +32,20 @@ public class Bacterium : MonoBehaviour
     float[] objectCount = new float[maxObject];
     Vector3[] objectVectors = new Vector3[maxObject];
 
+    GameObject filterMouthObject;
+    GameObject jawObject;
+    GameObject flagellasObject;
+    GameObject eyesObject;
+
     void Awake()
     {
         rigidBody = gameObject.GetComponent<Rigidbody2D>();
+        filterMouthObject = gameObject.transform.GetChild(0).gameObject;
+        jawObject = gameObject.transform.GetChild(1).gameObject;
+        flagellasObject = gameObject.transform.GetChild(2).gameObject;
+        eyesObject = gameObject.transform.GetChild(3).gameObject;
+
         if (energy == 0) energy = startEnergy;
-        divisionEnergy = GameManager.instance.defaultDivisionEnergy;
     }
 
     // Update is called once per frame
@@ -192,8 +201,30 @@ public class Bacterium : MonoBehaviour
     {
         genome = _genome;
 
-        //Color
+        //Base body
         gameObject.GetComponent<SpriteRenderer>().color = genome.color;
+        //Eyes
+        Color eyesColor = new Color(0.1f,0.1f, genome.visionSkill.skillPercent);
+        eyesObject.GetComponent<SpriteRenderer>().color = eyesColor;
+        eyesObject.transform.localScale = Vector3.one * genome.visionSkill.skillPercent * 1.5f;
+        //Jaw
+        jawObject.GetComponent<SpriteRenderer>().color = genome.color;
+        //Filter Mouth
+        filterMouthObject.GetComponent<SpriteRenderer>().color = genome.color;
+        //Flagellas
+        flagellasObject.GetComponent<SpriteRenderer>().color = genome.color;
+
+        //Disables/enables body parts
+        if (genome.attackSkill.skillPercent >= genome.foodSkill.skillPercent)
+        {
+            jawObject.SetActive(true);
+            filterMouthObject.SetActive(false);
+        }
+        else
+        {
+            jawObject.SetActive(false);
+            filterMouthObject.SetActive(true);
+        }
 
         //Size
         rigidBody.transform.localScale = new Vector3(genome.skills[4].currentSkill, genome.skills[4].currentSkill, genome.skills[4].currentSkill);

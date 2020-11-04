@@ -223,7 +223,7 @@ MonoBehaviour:
   StartNumberOfBacteria: 400
   mutationBeforeNewID: 20
   energyPerSecondLoss: 0.2
-  energyPerSizeLoss: 0.2
+  energyPerSizeLoss: 0.1
   defaultDivisionEnergy: 15
   recentGenomeID: 0
   recentBacteriumID: 0

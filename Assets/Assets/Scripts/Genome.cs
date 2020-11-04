@@ -28,6 +28,12 @@ public class Genome
         new Skill(sizeName, 1,1,4f)
     };
 
+    public Skill speedSkill { get { return skills[0]; } set { skills[0] = value; } }
+    public Skill visionSkill { get { return skills[1]; } set { skills[1] = value; } }
+    public Skill foodSkill { get { return skills[2]; } set { skills[2] = value; } }
+    public Skill attackSkill { get { return skills[3]; } set { skills[3] = value; } }
+    public Skill sizeSkill { get { return skills[4]; } set { skills[4] = value; } }
+
     public Genome(int size)
     {
         UpdateGenomeID();
@@ -106,9 +112,9 @@ public class Genome
     public Color GenerateColor()
     {
         Color color = UnityEngine.Random.ColorHSV(0f, 1f, 1f, 1f, 1f, 1f, 1f, 1f);
-        color.r = 0.25f + 0.75f * skills[3].skillPercent;
-        color.g = 0.25f + 0.75f * skills[2].skillPercent;
-        color.b = 0.25f;
+        color.r = 0.1f + 0.9f * skills[3].skillPercent;
+        color.g = 0.1f + 0.9f * skills[2].skillPercent;
+        color.b = 0.1f;
         return color;
     }
     public float GetLimitFactor(float limit, float firstVar, float secondVar)
