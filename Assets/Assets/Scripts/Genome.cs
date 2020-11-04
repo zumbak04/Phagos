@@ -1,13 +1,13 @@
 ﻿using System;
 using UnityEngine;
-using System.Collections.Generic;
 
 [System.Serializable]
 public class Genome
 {
     public int genomeID;
-    public int mutationBeforeNewID = 10;
-    public int mutationCount = 0;
+    int mutationBeforeNewID = GameManager.instance.mutationBeforeNewID;
+    [SerializeField]
+    int mutationCount = 0;
 
     public float[] weights;
 
@@ -27,8 +27,6 @@ public class Genome
         new Skill(attackName, 2,0,5),
         new Skill(sizeName, 1,1,4f)
     };
-
-    Vector3 localSize = new Vector3();
 
     public Genome(int size)
     {
@@ -84,17 +82,17 @@ public class Genome
             skill.currentSkill = Mathf.Clamp(skill.currentSkill, skill.minSkill, skill.maxSkill);
         }
 
-        //Size increases food and attack max-min caps
-        foreach (Skill skill in skills)
-        {
-            if (skill.name == attackName || skill.name == foodName)
-            {
-                skill.maxSkill = skills[4].currentSkill * skill.staticMaxSkill;
-                skill.minSkill = skills[4].currentSkill * skill.staticMinSkill;
-                skill.currentSkill *= skills[4].currentSkill;
-                skill.currentSkill = Mathf.Clamp(skill.currentSkill, skill.minSkill, skill.maxSkill);
-            }
-        }
+        ////Size increases food and attack max-min caps
+        //foreach (Skill skill in skills)
+        //{
+        //    if (skill.name == attackName || skill.name == foodName)
+        //    {
+        //        skill.maxSkill = skills[4].currentSkill * skill.staticMaxSkill;
+        //        skill.minSkill = skills[4].currentSkill * skill.staticMinSkill;
+        //        skill.currentSkill = skills[4].currentSkill * skill.currentSkill;
+        //        skill.currentSkill = Mathf.Clamp(skill.currentSkill, skill.minSkill, skill.maxSkill);
+        //    }
+        //}
 
         //color = Color.Lerp(color, GenerateColor(), 1f/GameManager.instance.mutationBeforeNewID);
         color = GenerateColor();

@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
@@ -9,10 +7,11 @@ public class GameManager : MonoBehaviour
     public Vector2 gameArea;
     public int StartNumberOfFood = 1000;
     public int StartNumberOfBacteria = 100;
-    public int mutationBeforeNewID = 20;
+    public int mutationBeforeNewID = 10;
     public float energyPerSecondLoss = 0.2f;
     public float energyPerSizeLoss = 0.2f;
     public float defaultDivisionEnergy = 15f;
+    float massFactor = 0.75f;
 
     public int recentGenomeID = 0;
     public int recentBacteriumID = 0;
@@ -76,5 +75,10 @@ public class GameManager : MonoBehaviour
 
         food.name = $"Food";
         food.transform.SetParent(foodHolder);
+    }
+    public float CountMass(Rigidbody2D rigidBody)
+    {
+        float mass = rigidBody.transform.localScale.x * rigidBody.transform.localScale.y * massFactor;
+        return mass;
     }
 }

@@ -3,18 +3,21 @@
 public class Bacterium : MonoBehaviour
 {
     //Stats
-    public float age = 0f;
+    [SerializeField]
+    float age = 0f;
     public float energy = 0f;
-    public float energyCost = 0f;
+    [SerializeField]
+    float energyCost = 0f;
 
     float startEnergy = 10f;
-    public float divisionEnergy = 15f;
+    [SerializeField]
+    float divisionEnergy = 15f;
 
     static float immunityTimerMax = 0.1f;
-    public float immunityTimer = immunityTimerMax;
+    [SerializeField]
+    float immunityTimer = immunityTimerMax;
 
     Rigidbody2D rigidBody;
-    Collider2D collider;
     NN nn;
 
     public Genome genome;
@@ -32,7 +35,6 @@ public class Bacterium : MonoBehaviour
     void Awake()
     {
         rigidBody = gameObject.GetComponent<Rigidbody2D>();
-        collider = gameObject.GetComponent<Collider2D>();
         if (energy == 0) energy = startEnergy;
         divisionEnergy = GameManager.instance.defaultDivisionEnergy;
     }
@@ -172,7 +174,7 @@ public class Bacterium : MonoBehaviour
 
             if (other.energy <= 0f)
             {
-                Debug.Log($"{gameObject.name}, {genome.genomeID} kills {collider.gameObject.name}, {other.genome.genomeID}");
+                //Debug.Log($"{gameObject.name}, {genome.genomeID} kills {collider.gameObject.name}, {other.genome.genomeID}");
                 other.Die();
             }
         }
@@ -195,7 +197,7 @@ public class Bacterium : MonoBehaviour
 
         //Size
         rigidBody.transform.localScale = new Vector3(genome.skills[4].currentSkill, genome.skills[4].currentSkill, genome.skills[4].currentSkill);
-        rigidBody.mass = rigidBody.transform.localScale.x * rigidBody.transform.localScale.y * rigidBody.transform.localScale.z;
+        rigidBody.mass = GameManager.instance.CountMass(rigidBody);
         divisionEnergy = GameManager.instance.defaultDivisionEnergy * rigidBody.mass;
 
         //Sets NN based on genome
