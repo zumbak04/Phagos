@@ -22,7 +22,7 @@ public class Genome
     public Skill[] skills =
     {
         new Skill(speedName, 0.25f,0.1f,1f),
-        new Skill(visionName, 5,5,15),
+        new Skill(visionName, 5,2.5f,10f),
         new Skill(foodName, 2.5f,0,5),
         new Skill(attackName, 2.5f,0,5),
         new Skill(sizeName, 1,1,4f)
