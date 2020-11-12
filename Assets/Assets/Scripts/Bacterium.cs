@@ -105,7 +105,7 @@ public class Bacterium : MonoBehaviour
             }
         }
         //Merges object count and vectors to create inputs for NN
-        for (int i = 1; i < maxObject; i++)
+        for (int i = 0; i < maxObject; i++)
         {
             if (objectCount[i] > 0)
             {
