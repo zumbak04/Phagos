@@ -91,7 +91,7 @@ public class Bacterium : MonoBehaviour
                     objectVectors[3] += vectorToObject;
                 }
                 //Pray is another exception, finds direct vector to pray
-                if (other.genome.skills[3].currentSkill < genome.skills[3].currentSkill)
+                else if (other.genome.skills[3].currentSkill < genome.skills[3].currentSkill)
                 {
                     objectCount[2]++;
                     if (vectorToObject.magnitude < objectVectors[2].magnitude || objectVectors[2].magnitude == 0)
