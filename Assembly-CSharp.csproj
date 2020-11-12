@@ -69,6 +69,7 @@
     <Compile Include="Assets\Assets\Scripts\Genome.cs" />
     <Compile Include="Assets\Assets\Scripts\Layer.cs" />
     <Compile Include="Assets\Assets\Scripts\NN.cs" />
+    <Compile Include="Assets\Assets\Scripts\Neuron.cs" />
     <Compile Include="Assets\Assets\Scripts\Skill.cs" />
     <Reference Include="Unity.Timeline.Editor">
       <HintPath>G:/Unity Projects/Phagos/Library/ScriptAssemblies/Unity.Timeline.Editor.dll</HintPath>

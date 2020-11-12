@@ -1,9 +1,12 @@
 ﻿using System;
 using UnityEngine;
 
+[System.Serializable]
 public class NN
 {
     public Layer[] layers;
+
+    public Layer lastLayer { get { return layers[layers.Length - 1]; } }
 
     public NN(params int[] sizes)
     {
@@ -17,7 +20,7 @@ public class NN
             {
                 for (int k = 0; k < nextSize; k++)
                 {
-                    layers[i].weights[j, k] = UnityEngine.Random.Range(-1f, 1f);
+                    layers[i].neurons[i].weights[k] = UnityEngine.Random.Range(-1f, 1f);
                 }
             }
         }
@@ -25,24 +28,27 @@ public class NN
 
     public float[] Move(float[] inputs)
     {
-        Array.Copy(inputs, 0, layers[0].neurons, 0, inputs.Length);
+        //Passes inputs to the first layer
+        layers[0].neuronValues = inputs;
+
         for (int i = 1; i < layers.Length; i++) 
         {
             float min = 0f;
             if(i == layers.Length - 1) min = -1f;
-            Layer l = layers[i - 1];
-            Layer l1 = layers[i];
-            for (int j = 0; j < l1.size; j++)
+            Layer prevLayer = layers[i - 1];
+            Layer thisLayer = layers[i];
+            for (int j = 0; j < thisLayer.size; j++)
             {
-                l1.neurons[j] = 0;
-                for (int k = 0; k < l.size; k++)
+                thisLayer.neurons[j].value = 0;
+                for (int k = 0; k < prevLayer.size; k++)
                 {
-                    l1.neurons[j] += l.neurons[k] * l.weights[k, j];
+                    thisLayer.neurons[j].value += prevLayer.neurons[k].value * prevLayer.neurons[k].weights[j];
                 }
-                l1.neurons[j] = Mathf.Min(1f, Mathf.Max(min, l1.neurons[j]));
+                thisLayer.neurons[j].value = Mathf.Min(1f, Mathf.Max(min, thisLayer.neurons[j].value));
             }
         }
-        return layers[layers.Length - 1].neurons;
+
+        return lastLayer.neuronValues;
     }
 
 }

@@ -18,6 +18,7 @@ public class Bacterium : MonoBehaviour
     float immunityTimer = immunityTimerMax;
 
     Rigidbody2D rigidBody;
+    [SerializeField]
     NN nn;
 
     public Genome genome;
@@ -233,18 +234,16 @@ public class Bacterium : MonoBehaviour
 
         //Sets NN based on genome
         nn = new NN(maxObject, 8, maxObject);
-        for(int i = 0; i < maxObject; i++)
+        int genomeWeightCounter = 0;
+        for (int l = 0; l < nn.layers.Length - 1; l++)
         {
-            for (int j = 0; j < 8; j++)
+            for (int i = 0; i < nn.layers[l].neurons.Length; i++)
             {
-                nn.layers[0].weights[i, j] = genome.weights[i + j * maxObject];
-            }
-        }
-        for (int i = 0; i < 8; i++)
-        {
-            for (int j = 0; j < 4; j++)
-            {
-                nn.layers[1].weights[i, j] = genome.weights[i + j * 8 + maxObject * 8];
+                for (int j = 0; j < nn.layers[l].neurons[i].weights.Length; j++)
+                {
+                    nn.layers[l].neurons[i].weights[j] = genome.weights[genomeWeightCounter];
+                    genomeWeightCounter++;
+                }
             }
         }
     }
