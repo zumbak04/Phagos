@@ -112,9 +112,9 @@ public class Genome
     public Color GenerateColor()
     {
         Color color = UnityEngine.Random.ColorHSV(0f, 1f, 1f, 1f, 1f, 1f, 1f, 1f);
-        color.r = 0.1f + 0.9f * skills[3].skillPercent;
-        color.g = 0.1f + 0.9f * skills[2].skillPercent;
-        color.b = 0.1f;
+        color.r = 0.2f + 0.8f * skills[3].skillPercent;
+        color.g = 0.2f + 0.8f * skills[2].skillPercent;
+        color.b = 0.2f;
         return color;
     }
     public float GetLimitFactor(float limit, float firstVar, float secondVar)

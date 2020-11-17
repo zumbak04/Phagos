@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using System.Collections;
 
 public class Bacterium : MonoBehaviour
 {
@@ -13,7 +14,7 @@ public class Bacterium : MonoBehaviour
     [SerializeField]
     float divisionEnergy = 15f;
 
-    static float immunityTimerMax = 0.01f;
+    static float immunityTimerMax = 0.1f;
     [SerializeField]
     float immunityTimer = immunityTimerMax;
 
@@ -37,6 +38,23 @@ public class Bacterium : MonoBehaviour
     GameObject jawObject;
     GameObject flagellasObject;
     GameObject eyesObject;
+
+    private bool takingDamageAnimation = false;
+
+    [SerializeField]
+    private float _size = 1;
+    public float size
+    {
+        get
+        {
+            return _size;
+        }
+        set
+        {
+            rigidBody.transform.localScale = new Vector3(value, value, value);
+            _size = value;
+        }
+    }
 
     void Awake()
     {
@@ -186,7 +204,11 @@ public class Bacterium : MonoBehaviour
             {
                 //Debug.Log($"{gameObject.name}, {genome.genomeID} kills {collider.gameObject.name}, {other.genome.genomeID}");
                 other.Die();
+                return;
             }
+
+            //Indicates it took damage
+            other.TakeDamage();
         }
     }
 
@@ -202,18 +224,12 @@ public class Bacterium : MonoBehaviour
     {
         genome = _genome;
 
-        //Base body
-        gameObject.GetComponent<SpriteRenderer>().color = genome.color;
+        //Body
+        RecolorBody(genome.color);
         //Eyes
         Color eyesColor = new Color(0.1f,0.1f, genome.visionSkill.skillPercent);
         eyesObject.GetComponent<SpriteRenderer>().color = eyesColor;
         eyesObject.transform.localScale = Vector3.one * genome.visionSkill.skillPercent * 1.5f;
-        //Jaw
-        jawObject.GetComponent<SpriteRenderer>().color = genome.color;
-        //Filter Mouth
-        filterMouthObject.GetComponent<SpriteRenderer>().color = genome.color;
-        //Flagellas
-        flagellasObject.GetComponent<SpriteRenderer>().color = genome.color;
 
         //Disables/enables body parts
         if (genome.attackSkill.skillPercent >= genome.foodSkill.skillPercent)
@@ -228,7 +244,7 @@ public class Bacterium : MonoBehaviour
         }
 
         //Size
-        rigidBody.transform.localScale = new Vector3(genome.skills[4].currentSkill, genome.skills[4].currentSkill, genome.skills[4].currentSkill);
+        size = genome.skills[4].currentSkill;
         rigidBody.mass = GameManager.instance.CountMass(rigidBody);
         divisionEnergy = GameManager.instance.defaultDivisionEnergy * rigidBody.mass;
 
@@ -291,5 +307,45 @@ public class Bacterium : MonoBehaviour
             Gizmos.color = Color.white;
             Gizmos.DrawWireSphere(gameObject.transform.position, genome.skills[1].currentSkill);
         }
+    }
+    public void RecolorBody(Color color)
+    {
+        //Base body
+        gameObject.GetComponent<SpriteRenderer>().color = color;
+        //Jaw
+        jawObject.GetComponent<SpriteRenderer>().color = color;
+        //Filter Mouth
+        filterMouthObject.GetComponent<SpriteRenderer>().color = color;
+        //Flagellas
+        flagellasObject.GetComponent<SpriteRenderer>().color = color;
+
+    }
+
+    public void TakeDamage()
+    {
+        if(!takingDamageAnimation) StartCoroutine(SizeOnDamage());
+    }
+    IEnumerator SizeOnDamage()
+    {
+        takingDamageAnimation = true;
+
+        float oldSize = size;
+        float newSize = size * 0.9f;
+        float changePerTick = (oldSize - newSize);
+        //Grows to new size
+        while (size > newSize)
+        {
+            size = size - changePerTick;
+            yield return new WaitForSeconds(0.1f);
+        }
+        //Shrinks to old size
+        while (size < oldSize)
+        {
+            size = size + changePerTick;
+            yield return new WaitForSeconds(0.1f);
+        }
+        size = oldSize;
+
+        takingDamageAnimation = false;
     }
 }
