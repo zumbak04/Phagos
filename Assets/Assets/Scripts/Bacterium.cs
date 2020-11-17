@@ -180,9 +180,7 @@ public class Bacterium : MonoBehaviour
 
     void OnCollisionEnter2D(Collision2D collider)
     {
-        //Is immune attack for second
-        if (immunityTimer > 0) return;
-        if (genome.skills[3].currentSkill == 0) return;
+        if (genome.attackSkill.currentSkill <= 0) return;
         if (collider.gameObject.TryGetComponent<Bacterium>(out Bacterium other))
         {
             //Is immune attack for second
@@ -191,24 +189,11 @@ public class Bacterium : MonoBehaviour
             //Doesn't attack its own kind
             if (genome.genomeID == other.genome.genomeID) return;
 
-            //Makes immuny to prevent counter attack
-            other.immunityTimer += immunityTimerMax;
-
-            //Steals energy
-            float damage = Mathf.Max(0f, genome.skills[3].currentSkill);
+            //Deals damage, steals energy
+            float damage = Mathf.Max(0f,genome.attackSkill.currentSkill);
             damage = Mathf.Min(damage, other.energy);
-            other.energy -= damage;
             Eat(damage);
-
-            if (other.energy <= 0f)
-            {
-                //Debug.Log($"{gameObject.name}, {genome.genomeID} kills {collider.gameObject.name}, {other.genome.genomeID}");
-                other.Die();
-                return;
-            }
-
-            //Indicates it took damage
-            other.TakeDamage();
+            other.TakeDamage(damage);
         }
     }
 
@@ -229,7 +214,7 @@ public class Bacterium : MonoBehaviour
         //Eyes
         Color eyesColor = new Color(0.1f,0.1f, genome.visionSkill.skillPercent);
         eyesObject.GetComponent<SpriteRenderer>().color = eyesColor;
-        eyesObject.transform.localScale = Vector3.one * genome.visionSkill.skillPercent * 1.5f;
+        eyesObject.transform.localScale = Vector3.one * genome.visionSkill.skillPercent;
 
         //Disables/enables body parts
         if (genome.attackSkill.skillPercent >= genome.foodSkill.skillPercent)
@@ -321,9 +306,19 @@ public class Bacterium : MonoBehaviour
 
     }
 
-    public void TakeDamage()
+    public void TakeDamage(float damage)
     {
-        if(!takingDamageAnimation) StartCoroutine(SizeOnDamage());
+        immunityTimer += immunityTimerMax;
+
+        energy -= damage;
+
+        if (energy <= 0f)
+        {
+            Die();
+            return;
+        }
+
+        if (!takingDamageAnimation) StartCoroutine(SizeOnDamage());
     }
     IEnumerator SizeOnDamage()
     {
