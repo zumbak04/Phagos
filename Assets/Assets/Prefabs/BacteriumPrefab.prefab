@@ -104,13 +104,17 @@ MonoBehaviour:
   energy: 0
   energyCost: 0
   divisionEnergy: 15
-  immunityTimer: 0.1
+  immunityCooldown: 0.1
+  attackCooldown: 0.1
+  nn:
+    layers: []
   genome:
     genomeID: 0
     mutationCount: 0
     weights: []
     color: {r: 0, g: 0, b: 0, a: 0}
     skills: []
+  _size: 1
 --- !u!70 &3418474834506865306
 CapsuleCollider2D:
   m_ObjectHideFlags: 0
@@ -158,7 +162,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6169499343648172233}
   - component: {fileID: 3566286745430154440}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: flagellas
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -239,7 +243,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4398187354959171617}
   - component: {fileID: 4824762106269661260}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: eyes
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -320,7 +324,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3761638306371248958}
   - component: {fileID: 8201822527603907678}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: filter mouth
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -401,7 +405,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1408851698308124207}
   - component: {fileID: 5732818207505931590}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: jaw
   m_TagString: Untagged
   m_Icon: {fileID: 0}

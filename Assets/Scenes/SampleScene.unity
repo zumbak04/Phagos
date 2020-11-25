@@ -219,12 +219,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   gameArea: {x: 60, y: 60}
-  StartNumberOfFood: 4000
+  StartNumberOfFood: 2000
   StartNumberOfBacteria: 400
   mutationBeforeNewID: 20
   energyPerSecondLoss: 0.2
   energyPerSizeLoss: 0.1
   defaultDivisionEnergy: 15
+  attackFactor: 2
   recentGenomeID: 0
   recentBacteriumID: 0
 --- !u!114 &1148454233

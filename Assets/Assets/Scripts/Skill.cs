@@ -5,32 +5,32 @@ public class Skill
 {
     [HideInInspector]
     public string name;
-    public float currentSkill;
-    public float minSkill;
-    public float maxSkill;
+    public float value;
+    public float min;
+    public float max;
 
-    public float staticMinSkill;
-    public float staticMaxSkill;
+    public float staticMin;
+    public float staticMax;
 
-    public Skill(string _name, float _currentSkill, float _minSkill, float _maxSkill)
+    public Skill(string _name, float _value, float _min, float _max)
     {
         name = _name;
-        currentSkill = _currentSkill;
-        minSkill = _minSkill;
-        maxSkill = _maxSkill;
-        staticMinSkill = minSkill;
-        staticMaxSkill = maxSkill;
+        value = _value;
+        min = _min;
+        max = _max;
+        staticMin = min;
+        staticMax = max;
     }
 
-    public float skillPercent
+    public float percent
     {
         get
         {
-            return currentSkill / maxSkill;
+            return value / max;
         }
         set
         {
-            currentSkill = value * maxSkill;
+            this.value = value * max;
         }
     }
 }

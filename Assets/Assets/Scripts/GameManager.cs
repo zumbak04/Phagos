@@ -8,10 +8,17 @@ public class GameManager : MonoBehaviour
     public int StartNumberOfFood = 1000;
     public int StartNumberOfBacteria = 100;
     public int mutationBeforeNewID = 10;
+    [HideInInspector]
     public float energyPerSecondLoss = 0.2f;
-    public float energyPerSizeLoss = 0.2f;
+    [HideInInspector]
+    public float energyPerSizeLoss = 0.1f;
     public float defaultDivisionEnergy = 15f;
-    float massFactor = 0.75f;
+
+    //Balance factors
+    //Attack deals more damage
+    public float attackFactor = 2f;
+    //Mass spends more energy
+    float massFactor = 1f;
 
     public int recentGenomeID = 0;
     public int recentBacteriumID = 0;
@@ -49,7 +56,7 @@ public class GameManager : MonoBehaviour
 
     void FixedUpdate()
     {
-        for(int foodSpawns = Mathf.Max(StartNumberOfFood/1000,1); foodSpawns > 0; foodSpawns--)
+        for(int foodSpawns = Mathf.Max(StartNumberOfFood/500,1); foodSpawns > 0; foodSpawns--)
         {
             Vector2 spawnPoint = new Vector2(Random.Range(-gameArea.x, gameArea.x), Random.Range(-gameArea.y, gameArea.y));
             SpawnFood(spawnPoint);

@@ -25,7 +25,7 @@ public class Genome
         new Skill(visionName, 5,2.5f,10f),
         new Skill(foodName, 2.5f,0,5),
         new Skill(attackName, 2.5f,0,5),
-        new Skill(sizeName, 1,1,4f)
+        new Skill(sizeName, 1,1,1)
     };
 
     public Skill speedSkill { get { return skills[0]; } set { skills[0] = value; } }
@@ -47,6 +47,12 @@ public class Genome
 
         //Generates color
         color = GenerateColor();
+
+        //Randomizes skills
+        speedSkill.value = UnityEngine.Random.Range(speedSkill.min, speedSkill.max);
+        visionSkill.value = UnityEngine.Random.Range(visionSkill.min, visionSkill.max);
+        foodSkill.value = UnityEngine.Random.Range(foodSkill.min, visionSkill.max);
+        attackSkill.value = UnityEngine.Random.Range(attackSkill.min, visionSkill.max);
     }
 
     public Genome(Genome a)
@@ -62,7 +68,7 @@ public class Genome
         skills = new Skill[a.skills.Length];
         for(int i = 0;i < skills.Length; i++)
         {
-            skills[i] = new Skill(a.skills[i].name, a.skills[i].currentSkill, a.skills[i].staticMinSkill, a.skills[i].staticMaxSkill);
+            skills[i] = new Skill(a.skills[i].name, a.skills[i].value, a.skills[i].staticMin, a.skills[i].staticMax);
         }
     }
 
@@ -79,9 +85,9 @@ public class Genome
         foreach (Skill skill in skills)
         {
             float skillChange = 0;
-            if (UnityEngine.Random.value < 0.1) skillChange = UnityEngine.Random.Range(-value * skill.maxSkill, value * skill.maxSkill);
-            skill.currentSkill += skillChange;
-            skill.currentSkill = Mathf.Clamp(skill.currentSkill, skill.minSkill, skill.maxSkill);
+            if (UnityEngine.Random.value < 0.1) skillChange = UnityEngine.Random.Range(-value * skill.max, value * skill.max);
+            skill.value += skillChange;
+            skill.value = Mathf.Clamp(skill.value, skill.min, skill.max);
         }
 
         //Size increases food and attack max-min caps
@@ -89,17 +95,18 @@ public class Genome
         {
             if (skill.name == attackName || skill.name == foodName)
             {
-                skill.maxSkill = skills[4].currentSkill * skill.staticMaxSkill;
-                skill.minSkill = skills[4].currentSkill * skill.staticMinSkill;
-                skill.currentSkill = skills[4].currentSkill * skill.currentSkill;
-                skill.currentSkill = Mathf.Clamp(skill.currentSkill, skill.minSkill, skill.maxSkill); //Just to make sure
+                float sizeBuff = sizeSkill.value;
+                skill.max = sizeBuff * skill.staticMax;
+                skill.min = sizeBuff * skill.staticMin;
+                skill.value = sizeBuff * skill.value;
+                skill.value = Mathf.Clamp(skill.value, skill.min, skill.max); //Just to make sure
             }
         }
 
         //Food and attack sum shoudn't be above 1
-        float limitFactor = GetLimitFactor(1, skills[2].skillPercent, skills[3].skillPercent);
-        skills[2].skillPercent *= limitFactor;
-        skills[3].skillPercent *= limitFactor;
+        float limitFactor = GetLimitFactor(1, skills[2].percent, skills[3].percent);
+        skills[2].percent *= limitFactor;
+        skills[3].percent *= limitFactor;
 
         //color = Color.Lerp(color, GenerateColor(), 1f/GameManager.instance.mutationBeforeNewID);
         color = GenerateColor();
@@ -112,8 +119,8 @@ public class Genome
     public Color GenerateColor()
     {
         Color color = UnityEngine.Random.ColorHSV(0f, 1f, 1f, 1f, 1f, 1f, 1f, 1f);
-        color.r = 0.2f + 0.8f * skills[3].skillPercent;
-        color.g = 0.2f + 0.8f * skills[2].skillPercent;
+        color.r = 0.2f + 0.8f * skills[3].percent;
+        color.g = 0.2f + 0.8f * skills[2].percent;
         color.b = 0.2f;
         return color;
     }

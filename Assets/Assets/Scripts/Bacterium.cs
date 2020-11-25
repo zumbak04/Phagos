@@ -14,9 +14,12 @@ public class Bacterium : MonoBehaviour
     [SerializeField]
     float divisionEnergy = 15f;
 
-    static float immunityTimerMax = 0.1f;
+    static float immunityCooldownAdd = 0.1f;
+    static float attackCooldownAdd = 1f;
     [SerializeField]
-    float immunityTimer = immunityTimerMax;
+    float immunityCooldown = immunityCooldownAdd;
+    [SerializeField]
+    float attackCooldown = 0f;
 
     Rigidbody2D rigidBody;
     [SerializeField]
@@ -75,12 +78,13 @@ public class Bacterium : MonoBehaviour
 
         //Timers
         age += Time.deltaTime;
-        immunityTimer = Mathf.Max(0, immunityTimer - Time.deltaTime);
+        immunityCooldown = Mathf.Max(0, immunityCooldown - Time.deltaTime);
+        attackCooldown = Mathf.Max(0, attackCooldown - Time.deltaTime);
     }
 
     private void FixedUpdate()
     {
-        Collider2D[] colliders = Physics2D.OverlapCircleAll(transform.position, genome.skills[1].currentSkill);
+        Collider2D[] colliders = Physics2D.OverlapCircleAll(transform.position, genome.skills[1].value);
 
         //Clears count and vectors
         for (int i = 0; i < maxObject; i++)
@@ -96,7 +100,7 @@ public class Bacterium : MonoBehaviour
             //Skips itself
             if (colliders[i].gameObject == gameObject) continue;
             //Food is exception, finds direct vector to food unless you can't eat it
-            if (colliders[i].gameObject.tag == "Food" && genome.skills[2].currentSkill > 0)
+            if (colliders[i].gameObject.tag == "Food" && genome.skills[2].value > 0)
             {
                 objectCount[0]++;
                 if (vectorToObject.magnitude < objectVectors[0].magnitude || objectVectors[0].magnitude == 0)
@@ -110,7 +114,7 @@ public class Bacterium : MonoBehaviour
                     objectVectors[3] += vectorToObject;
                 }
                 //Pray is another exception, finds direct vector to pray
-                else if (other.genome.skills[3].currentSkill < genome.skills[3].currentSkill)
+                else if (other.genome.skills[3].value < genome.skills[3].value)
                 {
                     objectCount[2]++;
                     if (vectorToObject.magnitude < objectVectors[2].magnitude || objectVectors[2].magnitude == 0)
@@ -155,7 +159,7 @@ public class Bacterium : MonoBehaviour
 
         //Moves bacterium to its target
         Vector2 velocity = rigidBody.velocity;
-        velocity += target * genome.skills[0].currentSkill;
+        velocity += target * genome.speedSkill.value;
         //To avoid skidding
         velocity *= 0.98f;
         rigidBody.velocity = velocity;
@@ -170,27 +174,33 @@ public class Bacterium : MonoBehaviour
 
     void OnTriggerEnter2D(Collider2D collider)
     {
-        if (genome.skills[2].currentSkill == 0) return;
+        if (genome.skills[2].value == 0) return;
         if (collider.gameObject.tag == "Food")
         {
-            Eat(genome.skills[2].currentSkill);
+            Eat(genome.skills[2].value);
             Destroy(collider.gameObject);
         }
     }
 
     void OnCollisionEnter2D(Collision2D collider)
     {
-        if (genome.attackSkill.currentSkill <= 0) return;
+        //Skips collision if can't attack
+        if (genome.attackSkill.value <= 0) return;
+        //Skips collision if attack is on cooldown
+        if (attackCooldown > 0) return;
+        //if (immunityCooldown > 0) return;
         if (collider.gameObject.TryGetComponent<Bacterium>(out Bacterium other))
         {
-            //Is immune attack for second
-            if (other.immunityTimer > 0) return;
-
+            //Skips if target is immune
+            if (other.immunityCooldown > 0) return;
             //Doesn't attack its own kind
             if (genome.genomeID == other.genome.genomeID) return;
 
+            //Adds attack cooldown
+            attackCooldown += attackCooldownAdd;
+
             //Deals damage, steals energy
-            float damage = Mathf.Max(0f,genome.attackSkill.currentSkill);
+            float damage = Mathf.Max(0f,genome.attackSkill.value * GameManager.instance.attackFactor);
             damage = Mathf.Min(damage, other.energy);
             Eat(damage);
             other.TakeDamage(damage);
@@ -212,12 +222,12 @@ public class Bacterium : MonoBehaviour
         //Body
         RecolorBody(genome.color);
         //Eyes
-        Color eyesColor = new Color(0.1f,0.1f, genome.visionSkill.skillPercent);
+        Color eyesColor = new Color(0.1f,0.1f, genome.visionSkill.percent);
         eyesObject.GetComponent<SpriteRenderer>().color = eyesColor;
-        eyesObject.transform.localScale = Vector3.one * genome.visionSkill.skillPercent;
+        eyesObject.transform.localScale = Vector3.one * genome.visionSkill.percent;
 
         //Disables/enables body parts
-        if (genome.attackSkill.skillPercent >= genome.foodSkill.skillPercent)
+        if (genome.attackSkill.percent >= genome.foodSkill.percent)
         {
             jawObject.SetActive(true);
             filterMouthObject.SetActive(false);
@@ -229,7 +239,7 @@ public class Bacterium : MonoBehaviour
         }
 
         //Size
-        size = genome.skills[4].currentSkill;
+        size = genome.skills[4].value;
         rigidBody.mass = GameManager.instance.CountMass(rigidBody);
         divisionEnergy = GameManager.instance.defaultDivisionEnergy * rigidBody.mass;
 
@@ -290,7 +300,7 @@ public class Bacterium : MonoBehaviour
             }
             Gizmos.DrawLine(gameObject.transform.position, objectVectors[i] + gameObject.transform.position);
             Gizmos.color = Color.white;
-            Gizmos.DrawWireSphere(gameObject.transform.position, genome.skills[1].currentSkill);
+            Gizmos.DrawWireSphere(gameObject.transform.position, genome.skills[1].value);
         }
     }
     public void RecolorBody(Color color)
@@ -308,7 +318,7 @@ public class Bacterium : MonoBehaviour
 
     public void TakeDamage(float damage)
     {
-        immunityTimer += immunityTimerMax;
+        immunityCooldown += immunityCooldownAdd;
 
         energy -= damage;
 
