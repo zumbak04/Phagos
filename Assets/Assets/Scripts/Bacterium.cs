@@ -299,9 +299,9 @@ public class Bacterium : MonoBehaviour
                     break;
             }
             Gizmos.DrawLine(gameObject.transform.position, objectVectors[i] + gameObject.transform.position);
-            Gizmos.color = Color.white;
-            Gizmos.DrawWireSphere(gameObject.transform.position, genome.skills[1].value);
         }
+        Gizmos.color = Color.white;
+        Gizmos.DrawWireSphere(gameObject.transform.position, genome.skills[1].value);
     }
     public void RecolorBody(Color color)
     {
