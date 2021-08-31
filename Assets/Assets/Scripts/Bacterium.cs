@@ -167,7 +167,7 @@ public class Bacterium : MonoBehaviour
         velocity *= 0.95f;
         rigidBody.velocity = velocity;
 
-        SpendEnergy();
+        SpendEnergy(acceleration);
     }
 
     public void Die()
@@ -269,10 +269,10 @@ public class Bacterium : MonoBehaviour
         Bacterium childBacterium = GameManager.instance.SpawnBacterium(rigidBody.transform.position,childGenome);
         childBacterium.energy = energy;
     }
-    public void SpendEnergy()
+    public void SpendEnergy(Vector2 velocityChange)
     {
         //Spends energy
-        energyCost = Time.deltaTime * (GameManager.instance.energyPerSecondLoss + rigidBody.mass * GameManager.instance.energyPerSizeLoss);
+        energyCost = Time.deltaTime * (GameManager.instance.energyPerSecondLoss + velocityChange.magnitude * rigidBody.mass * GameManager.instance.energyPerSizeLoss);
         energy -= energyCost;
 
         //If energy is low, dies
