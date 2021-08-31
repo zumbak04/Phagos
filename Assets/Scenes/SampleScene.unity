@@ -221,9 +221,9 @@ MonoBehaviour:
   gameArea: {x: 60, y: 60}
   StartNumberOfFood: 2000
   StartNumberOfBacteria: 400
-  mutationBeforeNewID: 20
-  energyPerSecondLoss: 0.2
-  energyPerSizeLoss: 0.1
+  mutationBeforeNewID: 10
+  energyPerSecondLoss: 0.25
+  energyPerSizeLoss: 0
   defaultDivisionEnergy: 15
   attackFactor: 2
   recentGenomeID: 0

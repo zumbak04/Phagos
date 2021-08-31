@@ -37,6 +37,8 @@ public class Bacterium : MonoBehaviour
     float[] objectCount = new float[maxObject];
     Vector3[] objectVectors = new Vector3[maxObject];
 
+    Vector2 acceleration;
+
     GameObject filterMouthObject;
     GameObject jawObject;
     GameObject flagellasObject;
@@ -159,12 +161,13 @@ public class Bacterium : MonoBehaviour
 
         //Moves bacterium to its target
         Vector2 velocity = rigidBody.velocity;
-        velocity += target * genome.speedSkill.value;
+        acceleration = target * genome.speedSkill.value;
+        velocity += acceleration;
         //To avoid skidding
-        velocity *= 0.98f;
+        velocity *= 0.95f;
         rigidBody.velocity = velocity;
 
-        SpendEnergy();
+        SpendEnergy(acceleration);
     }
 
     public void Die()
@@ -266,10 +269,10 @@ public class Bacterium : MonoBehaviour
         Bacterium childBacterium = GameManager.instance.SpawnBacterium(rigidBody.transform.position,childGenome);
         childBacterium.energy = energy;
     }
-    public void SpendEnergy()
+    public void SpendEnergy(Vector2 velocityChange)
     {
         //Spends energy
-        energyCost = Time.deltaTime * (GameManager.instance.energyPerSecondLoss + rigidBody.velocity.magnitude * rigidBody.mass * GameManager.instance.energyPerSizeLoss);
+        energyCost = Time.deltaTime * (GameManager.instance.energyPerSecondLoss + velocityChange.magnitude * rigidBody.mass * GameManager.instance.energyPerSizeLoss);
         energy -= energyCost;
 
         //If energy is low, dies
@@ -302,6 +305,8 @@ public class Bacterium : MonoBehaviour
         }
         Gizmos.color = Color.white;
         Gizmos.DrawWireSphere(gameObject.transform.position, genome.skills[1].value);
+        Vector3 acceleration3 = acceleration;
+        Gizmos.DrawLine(gameObject.transform.position, acceleration3 + gameObject.transform.position);
     }
     public void RecolorBody(Color color)
     {
@@ -335,7 +340,7 @@ public class Bacterium : MonoBehaviour
         takingDamageAnimation = true;
 
         float oldSize = size;
-        float newSize = size * 0.9f;
+        float newSize = size * 0.85f;
         float changePerTick = (oldSize - newSize);
         //Grows to new size
         while (size > newSize)

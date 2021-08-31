@@ -5,20 +5,18 @@ public class GameManager : MonoBehaviour
     public static GameManager instance = null;
 
     public Vector2 gameArea;
-    public int StartNumberOfFood = 1000;
-    public int StartNumberOfBacteria = 100;
+    public int StartNumberOfFood = 2000;
+    public int StartNumberOfBacteria = 400;
     public int mutationBeforeNewID = 10;
-    [HideInInspector]
-    public float energyPerSecondLoss = 0.2f;
-    [HideInInspector]
-    public float energyPerSizeLoss = 0.1f;
+    public float energyPerSecondLoss = 1f;
+    public float energyPerSizeLoss = 0.2f;
     public float defaultDivisionEnergy = 15f;
 
     //Balance factors
     //Attack deals more damage
-    public float attackFactor = 2f;
+    public float attackFactor = 2;
     //Mass spends more energy
-    float massFactor = 1f;
+    float massFactor = 0.75f;
 
     public int recentGenomeID = 0;
     public int recentBacteriumID = 0;
