@@ -4,33 +4,47 @@
 public class Skill
 {
     [HideInInspector]
-    public string name;
-    public float value;
-    public float min;
-    public float max;
+    public readonly string name;
+    public readonly int min = 0;
+    public readonly int max = 10;
 
-    public float staticMin;
-    public float staticMax;
+    [SerializeField]
+    private int _level;
+    private float _factor;
 
-    public Skill(string _name, float _value, float _min, float _max)
+    public Skill(string name, int level, int min, int max, float factor)
     {
-        name = _name;
-        value = _value;
-        min = _min;
-        max = _max;
-        staticMin = min;
-        staticMax = max;
+        this.name = name;
+        this.min = min;
+        this.max = max;
+
+        _level = level;
+        _factor = factor;
+    }
+    public Skill(Skill parent)
+    {
+        name = parent.name;
+        min = parent.min;
+        max = parent.max;
+
+        _level = parent.Level;
     }
 
-    public float percent
+    public float Percent
     {
-        get
-        {
-            return value / max;
-        }
-        set
-        {
-            this.value = value * max;
-        }
+        get => (float)Level / (float)max;
+    }
+    public float Effect
+    {
+        get => Level * _factor;
+    }
+    public int Level {
+        get => _level;
+    }
+
+    public void ChangeLevel(int skillLevelSum, int change)
+    {
+        if(skillLevelSum + change <= GameManager.instance.maxSkillSum)
+            _level += change;
     }
 }
