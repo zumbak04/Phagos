@@ -13,7 +13,7 @@ public class GameManager : MonoBehaviour
     public float defaultDivisionEnergy = 15f;
     public int maxSkill = 10;
     public int minSkill = 0;
-    public int maxSkillSum = 20;
+    public int maxSkillSum = 30;
 
     //Balance factors
     //Attack deals more damage

@@ -3,36 +3,33 @@
 [System.Serializable]
 public class Skill
 {
-    [HideInInspector]
-    public readonly string name;
-    public readonly int min = 0;
-    public readonly int max = 10;
-
     [SerializeField]
-    private int _level;
+    private string _name;
+    private int _min = 0;
+    private int _max = 10;
+    [SerializeField]
+    private int _level = 5;
     private float _factor;
 
-    public Skill(string name, int level, int min, int max, float factor)
+    public Skill(string name, int min, int max, float factor)
     {
-        this.name = name;
-        this.min = min;
-        this.max = max;
-
-        _level = level;
+        _name = name;
+        _min = min;
+        _max = max;
         _factor = factor;
     }
     public Skill(Skill parent)
     {
-        name = parent.name;
-        min = parent.min;
-        max = parent.max;
-
+        _name = parent._name;
+        _min = parent._min;
+        _max = parent._max;
         _level = parent.Level;
+        _factor = parent.Factor;
     }
 
     public float Percent
     {
-        get => (float)Level / (float)max;
+        get => (float)Level / (float)_max;
     }
     public float Effect
     {
@@ -41,10 +38,25 @@ public class Skill
     public int Level {
         get => _level;
     }
+    public float Factor
+    {
+        get => _factor;
+    }
+    public int Min
+    {
+        get => _min;
+    }
+    public int Max
+    {
+        get => _max;
+    }
 
     public void ChangeLevel(int skillLevelSum, int change)
     {
         if(skillLevelSum + change <= GameManager.instance.maxSkillSum)
+        {
             _level += change;
+            _level = Mathf.Clamp(_level, _min, _max);
+        }
     }
 }

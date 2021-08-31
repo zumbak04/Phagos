@@ -16,11 +16,11 @@ public class Genome
     [SerializeField]
     private Skill[] skills =
     {
-        new Skill("Speed", 1, GameManager.instance.minSkill,GameManager.instance.maxSkill, 0.1f),
-        new Skill("Vision", 5, GameManager.instance.minSkill,GameManager.instance.maxSkill, 1f),
-        new Skill("Food", 5, GameManager.instance.minSkill,GameManager.instance.maxSkill, 0.5f),
-        new Skill("Attack", 0, GameManager.instance.minSkill,GameManager.instance.maxSkill, 0.5f),
-        new Skill("Size", 5, 5, 5, 0.2f) //Disabled for now
+        new Skill("Speed", GameManager.instance.minSkill,GameManager.instance.maxSkill, 0.1f),
+        new Skill("Vision", GameManager.instance.minSkill,GameManager.instance.maxSkill, 1f),
+        new Skill("Food", GameManager.instance.minSkill,GameManager.instance.maxSkill, 0.5f),
+        new Skill("Attack", GameManager.instance.minSkill,GameManager.instance.maxSkill, 0.5f),
+        new Skill("Size", 5, 5, 0.2f) //Disabled for now
     };
 
     public int SkillLevelSum
@@ -49,10 +49,10 @@ public class Genome
         color = GenerateColor();
 
         //Randomizes skills
-        SpeedSkill.ChangeLevel(SkillLevelSum,UnityEngine.Random.Range(SpeedSkill.min, SpeedSkill.max));
-        VisionSkill.ChangeLevel(SkillLevelSum, UnityEngine.Random.Range(VisionSkill.min, VisionSkill.max));
-        FoodSkill.ChangeLevel(SkillLevelSum, UnityEngine.Random.Range(FoodSkill.min, VisionSkill.max));
-        AttackSkill.ChangeLevel(SkillLevelSum, UnityEngine.Random.Range(AttackSkill.min, VisionSkill.max));
+        SpeedSkill.ChangeLevel(SkillLevelSum,UnityEngine.Random.Range(SpeedSkill.Min, SpeedSkill.Max));
+        VisionSkill.ChangeLevel(SkillLevelSum, UnityEngine.Random.Range(VisionSkill.Min, VisionSkill.Max));
+        FoodSkill.ChangeLevel(SkillLevelSum, UnityEngine.Random.Range(FoodSkill.Min, VisionSkill.Max));
+        AttackSkill.ChangeLevel(SkillLevelSum, UnityEngine.Random.Range(AttackSkill.Min, VisionSkill.Max));
     }
 
     public Genome(Genome parent)
@@ -85,7 +85,7 @@ public class Genome
         foreach (Skill skill in skills)
         {
             int skillChange = 0;
-            if (UnityEngine.Random.value < 0.1) skillChange = Convert.ToInt32(UnityEngine.Random.Range(-mutationFactor * skill.max, mutationFactor * skill.max));
+            if (UnityEngine.Random.value < 0.1) skillChange = Convert.ToInt32(UnityEngine.Random.Range(-mutationFactor * skill.Max, mutationFactor * skill.Max));
             skill.ChangeLevel(SkillLevelSum, skillChange);
         }
 
