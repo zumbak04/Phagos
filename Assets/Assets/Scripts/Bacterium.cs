@@ -43,6 +43,7 @@ public class Bacterium : MonoBehaviour
     GameObject jawObject;
     GameObject flagellasObject;
     GameObject eyesObject;
+    GameObject shellObject;
 
     private bool takingDamageAnimation = false;
 
@@ -68,6 +69,7 @@ public class Bacterium : MonoBehaviour
         jawObject = gameObject.transform.GetChild(1).gameObject;
         flagellasObject = gameObject.transform.GetChild(2).gameObject;
         eyesObject = gameObject.transform.GetChild(3).gameObject;
+        shellObject = gameObject.transform.GetChild(4).gameObject;
 
         if (energy == 0) energy = startEnergy;
     }
@@ -318,7 +320,13 @@ public class Bacterium : MonoBehaviour
         filterMouthObject.GetComponent<SpriteRenderer>().color = color;
         //Flagellas
         flagellasObject.GetComponent<SpriteRenderer>().color = color;
-
+        //Shell
+        Color shellColor = color;
+        shellColor.r *= 0.75f;
+        shellColor.g *= 0.75f;
+        shellColor.b *= 0.75f;
+        shellColor.a = genome.defenceSkill.skillPercent;
+        shellObject.GetComponent<SpriteRenderer>().color = shellColor;
     }
 
     public void TakeDamage(float damage)
