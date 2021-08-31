@@ -1,5 +1,6 @@
 ﻿using System;
 using UnityEngine;
+using System.Linq;
 
 [System.Serializable]
 public class Genome
@@ -18,6 +19,7 @@ public class Genome
     static string foodName = "Food Skill";
     static string attackName = "Attack Skill";
     static string sizeName = "Size Skill";
+    static string defenceName = "Defence Skill";
 
     public Skill[] skills =
     {
@@ -33,6 +35,7 @@ public class Genome
     public Skill foodSkill { get { return skills[2]; } set { skills[2] = value; } }
     public Skill attackSkill { get { return skills[3]; } set { skills[3] = value; } }
     public Skill sizeSkill { get { return skills[4]; } set { skills[4] = value; } }
+    public Skill defenceSkill { get { return skills[5]; } set { skills[5] = value; } }
 
     public Genome(int size)
     {
@@ -93,20 +96,20 @@ public class Genome
         //Size increases food and attack max-min caps
         foreach (Skill skill in skills)
         {
-            if (skill.name == attackName || skill.name == foodName)
+            if (skill.name == attackName || skill.name == foodName || skill.name == defenceName)
             {
-                float sizeBuff = sizeSkill.value;
-                skill.max = sizeBuff * skill.staticMax;
-                skill.min = sizeBuff * skill.staticMin;
-                skill.value = sizeBuff * skill.value;
-                skill.value = Mathf.Clamp(skill.value, skill.min, skill.max); //Just to make sure
+                skill.maxSkill = sizeSkill.currentSkill * skill.staticMaxSkill;
+                skill.minSkill = sizeSkill.currentSkill * skill.staticMinSkill;
+                skill.currentSkill = sizeSkill.currentSkill * skill.currentSkill;
+                skill.currentSkill = Mathf.Clamp(skill.currentSkill, skill.minSkill, skill.maxSkill); //Just to make sure
             }
         }
 
-        //Food and attack sum shoudn't be above 1
-        float limitFactor = GetLimitFactor(1, skills[2].percent, skills[3].percent);
-        skills[2].percent *= limitFactor;
-        skills[3].percent *= limitFactor;
+        //Food, attack and defence sum shoudn't be above 1
+        float limitFactor = GetLimitFactor(1, attackSkill.skillPercent, foodSkill.skillPercent, defenceSkill.skillPercent);
+        foodSkill.skillPercent *= limitFactor;
+        attackSkill.skillPercent *= limitFactor;
+        defenceSkill.skillPercent *= limitFactor;
 
         //color = Color.Lerp(color, GenerateColor(), 1f/GameManager.instance.mutationBeforeNewID);
         color = GenerateColor();
@@ -119,17 +122,19 @@ public class Genome
     public Color GenerateColor()
     {
         Color color = UnityEngine.Random.ColorHSV(0f, 1f, 1f, 1f, 1f, 1f, 1f, 1f);
-        color.r = 0.2f + 0.8f * skills[3].percent;
-        color.g = 0.2f + 0.8f * skills[2].percent;
-        color.b = 0.2f;
+        color.r = 0.25f + 0.75f * attackSkill.skillPercent;
+        color.g = 0.25f + 0.75f * foodSkill.skillPercent;
+        color.b = 0.25f + 0.75f * defenceSkill.skillPercent; ;
         return color;
     }
-    public float GetLimitFactor(float limit, float firstVar, float secondVar)
+    public float GetLimitFactor(float limit, params float[] vars)
     {
         float factor = 1;
-        if (firstVar + secondVar > limit)
+        //Sums vars
+        float sum = vars.Sum();
+        if (sum > limit)
         {
-            factor = limit / (firstVar + secondVar);
+            factor = limit / sum;
         }
         return factor;
     }
