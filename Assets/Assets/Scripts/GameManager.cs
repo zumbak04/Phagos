@@ -21,6 +21,8 @@ public class GameManager : MonoBehaviour
     //Attack deals more damage
     //Mass spends more energy
     float massFactor = 0.75f;
+    public float immunityCooldown = 0.1f;
+    public float attackCooldown = 1f;
 
     public int recentGenomeID = 0;
     public int recentBacteriumID = 0;

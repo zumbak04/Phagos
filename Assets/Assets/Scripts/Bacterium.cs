@@ -1,54 +1,55 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public class Bacterium : MonoBehaviour
 {
     //Stats
     [SerializeField]
-    float age = 0f;
-    public float energy = 0f;
+    private float age = 0f;
     [SerializeField]
-    float energyCost = 0f;
+    private float energy = 0f;
+    [SerializeField]
+    private float energyCost = 0f;
 
-    float startEnergy = 10f;
+    private float startEnergy = 10f;
     [SerializeField]
-    float divisionEnergy = 15f;
+    private float divisionEnergy = 15f;
 
-    static float immunityCooldownAdd = 0.1f;
-    static float attackCooldownAdd = 1f;
     [SerializeField]
-    float immunityCooldown = immunityCooldownAdd;
+    private float immunityCooldown = GameManager.instance.immunityCooldown;
     [SerializeField]
-    float attackCooldown = 0f;
+    private float attackCooldown = 0f;
 
     Rigidbody2D rigidBody;
     [SerializeField]
     NN nn;
 
-    public Genome genome;
+    [SerializeField]
+    private Genome genome;
 
     //Objects around
     //0 is food
     //1 is enemy
     //2 is pray
     //3 is friend
-    static int maxObject = 4;
-    float[] inputs = new float[maxObject];
-    float[] objectCount = new float[maxObject];
-    Vector3[] objectVectors = new Vector3[maxObject];
+    private static int maxObject = 4;
+    private float[] inputs = new float[maxObject];
+    private float[] objectCount = new float[maxObject];
+    private Vector3[] objectVectors = new Vector3[maxObject];
 
-    Vector2 acceleration;
+    private Vector2 acceleration;
 
-    GameObject filterMouthObject;
-    GameObject jawObject;
-    GameObject flagellasObject;
-    GameObject eyesObject;
+    private GameObject filterMouthObject;
+    private GameObject jawObject;
+    private GameObject flagellasObject;
+    private GameObject eyesObject;
 
     private bool takingDamageAnimation = false;
 
     [SerializeField]
     private float _size = 1;
-    public float size
+    public float Size
     {
         get
         {
@@ -200,7 +201,7 @@ public class Bacterium : MonoBehaviour
             if (genome.genomeID == other.genome.genomeID) return;
 
             //Adds attack cooldown
-            attackCooldown += attackCooldownAdd;
+            attackCooldown += GameManager.instance.attackCooldown;
 
             //Deals damage, steals energy
             float damage = Mathf.Max(0f,genome.AttackSkill.Effect);
@@ -242,7 +243,7 @@ public class Bacterium : MonoBehaviour
         }
 
         //Size
-        size = genome.SizeSkill.Effect;
+        Size = genome.SizeSkill.Effect;
         rigidBody.mass = GameManager.instance.CountMass(rigidBody);
         divisionEnergy = GameManager.instance.defaultDivisionEnergy * rigidBody.mass;
 
@@ -323,7 +324,7 @@ public class Bacterium : MonoBehaviour
 
     public void TakeDamage(float damage)
     {
-        immunityCooldown += immunityCooldownAdd;
+        immunityCooldown += GameManager.instance.immunityCooldown;
 
         energy -= damage;
 
@@ -339,22 +340,22 @@ public class Bacterium : MonoBehaviour
     {
         takingDamageAnimation = true;
 
-        float oldSize = size;
-        float newSize = size * 0.85f;
+        float oldSize = Size;
+        float newSize = Size * 0.85f;
         float changePerTick = (oldSize - newSize);
         //Grows to new size
-        while (size > newSize)
+        while (Size > newSize)
         {
-            size = size - changePerTick;
+            Size = Size - changePerTick;
             yield return new WaitForSeconds(0.1f);
         }
         //Shrinks to old size
-        while (size < oldSize)
+        while (Size < oldSize)
         {
-            size = size + changePerTick;
+            Size = Size + changePerTick;
             yield return new WaitForSeconds(0.1f);
         }
-        size = oldSize;
+        Size = oldSize;
 
         takingDamageAnimation = false;
     }
