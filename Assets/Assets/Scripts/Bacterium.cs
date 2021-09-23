@@ -180,7 +180,7 @@ public class Bacterium : MonoBehaviour
         if (genome.AttackSkill.Effect == 0) return;
         if (collider.gameObject.tag == "Food")
         {
-            Eat(genome.AttackSkill.Effect);
+            Eat(genome.FoodSkill.Effect);
             Destroy(collider.gameObject);
         }
     }
