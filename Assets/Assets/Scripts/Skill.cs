@@ -9,6 +9,7 @@ public class Skill
     private int _max = 10;
     [SerializeField]
     private int _level = 5;
+    [SerializeField]
     private float _factor;
 
     public Skill(string name, int min, int max, float factor)
@@ -29,11 +30,11 @@ public class Skill
 
     public float Percent
     {
-        get => (float)Level / (float)_max;
+        get => (float)_level / (float)_max;
     }
     public float Effect
     {
-        get => Level * _factor;
+        get => _level * _factor;
     }
     public int Level {
         get => _level;
