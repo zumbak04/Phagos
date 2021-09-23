@@ -225,6 +225,9 @@ MonoBehaviour:
   energyPerSecondLoss: 0.25
   energyPerSizeLoss: 0
   defaultDivisionEnergy: 15
+  maxSkill: 10
+  minSkill: 0
+  maxSkillSum: 25
   attackFactor: 2
   recentGenomeID: 0
   recentBacteriumID: 0

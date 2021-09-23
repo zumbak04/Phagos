@@ -86,7 +86,7 @@ public class Bacterium : MonoBehaviour
 
     private void FixedUpdate()
     {
-        Collider2D[] colliders = Physics2D.OverlapCircleAll(transform.position, genome.skills[1].value);
+        Collider2D[] colliders = Physics2D.OverlapCircleAll(transform.position, genome.VisionSkill.Effect);
 
         //Clears count and vectors
         for (int i = 0; i < maxObject; i++)
@@ -102,7 +102,7 @@ public class Bacterium : MonoBehaviour
             //Skips itself
             if (colliders[i].gameObject == gameObject) continue;
             //Food is exception, finds direct vector to food unless you can't eat it
-            if (colliders[i].gameObject.tag == "Food" && genome.skills[2].value > 0)
+            if (colliders[i].gameObject.tag == "Food" && genome.FoodSkill.Effect > 0)
             {
                 objectCount[0]++;
                 if (vectorToObject.magnitude < objectVectors[0].magnitude || objectVectors[0].magnitude == 0)
@@ -116,7 +116,7 @@ public class Bacterium : MonoBehaviour
                     objectVectors[3] += vectorToObject;
                 }
                 //Pray is another exception, finds direct vector to pray
-                else if (other.genome.skills[3].value < genome.skills[3].value)
+                else if (other.genome.AttackSkill.Effect < genome.AttackSkill.Effect)
                 {
                     objectCount[2]++;
                     if (vectorToObject.magnitude < objectVectors[2].magnitude || objectVectors[2].magnitude == 0)
@@ -161,7 +161,7 @@ public class Bacterium : MonoBehaviour
 
         //Moves bacterium to its target
         Vector2 velocity = rigidBody.velocity;
-        acceleration = target * genome.speedSkill.value;
+        acceleration = target * genome.SpeedSkill.Effect;
         velocity += acceleration;
         //To avoid skidding
         velocity *= 0.95f;
@@ -177,10 +177,10 @@ public class Bacterium : MonoBehaviour
 
     void OnTriggerEnter2D(Collider2D collider)
     {
-        if (genome.skills[2].value == 0) return;
+        if (genome.AttackSkill.Effect == 0) return;
         if (collider.gameObject.tag == "Food")
         {
-            Eat(genome.skills[2].value);
+            Eat(genome.FoodSkill.Effect);
             Destroy(collider.gameObject);
         }
     }
@@ -188,7 +188,7 @@ public class Bacterium : MonoBehaviour
     void OnCollisionEnter2D(Collision2D collider)
     {
         //Skips collision if can't attack
-        if (genome.attackSkill.value <= 0) return;
+        if (genome.AttackSkill.Effect <= 0) return;
         //Skips collision if attack is on cooldown
         if (attackCooldown > 0) return;
         //if (immunityCooldown > 0) return;
@@ -203,7 +203,7 @@ public class Bacterium : MonoBehaviour
             attackCooldown += attackCooldownAdd;
 
             //Deals damage, steals energy
-            float damage = Mathf.Max(0f,genome.attackSkill.value * GameManager.instance.attackFactor);
+            float damage = Mathf.Max(0f,genome.AttackSkill.Effect);
             damage = Mathf.Min(damage, other.energy);
             Eat(damage);
             other.TakeDamage(damage);
@@ -225,12 +225,12 @@ public class Bacterium : MonoBehaviour
         //Body
         RecolorBody(genome.color);
         //Eyes
-        Color eyesColor = new Color(0.1f,0.1f, genome.visionSkill.percent);
-        eyesObject.GetComponent<SpriteRenderer>().color = eyesColor;
-        eyesObject.transform.localScale = Vector3.one * genome.visionSkill.percent;
+        //Color eyesColor = new Color(0.1f,0.1f, genome.visionSkill.percent); //Maybe later
+        eyesObject.GetComponent<SpriteRenderer>().color = Color.black;
+        eyesObject.transform.localScale = Vector3.one * genome.VisionSkill.Percent;
 
         //Disables/enables body parts
-        if (genome.attackSkill.percent >= genome.foodSkill.percent)
+        if (genome.AttackSkill.Percent >= genome.FoodSkill.Percent)
         {
             jawObject.SetActive(true);
             filterMouthObject.SetActive(false);
@@ -242,7 +242,7 @@ public class Bacterium : MonoBehaviour
         }
 
         //Size
-        size = genome.skills[4].value;
+        size = genome.SizeSkill.Effect;
         rigidBody.mass = GameManager.instance.CountMass(rigidBody);
         divisionEnergy = GameManager.instance.defaultDivisionEnergy * rigidBody.mass;
 
@@ -304,7 +304,7 @@ public class Bacterium : MonoBehaviour
             Gizmos.DrawLine(gameObject.transform.position, objectVectors[i] + gameObject.transform.position);
         }
         Gizmos.color = Color.white;
-        Gizmos.DrawWireSphere(gameObject.transform.position, genome.skills[1].value);
+        Gizmos.DrawWireSphere(gameObject.transform.position, genome.VisionSkill.Effect);
         Vector3 acceleration3 = acceleration;
         Gizmos.DrawLine(gameObject.transform.position, acceleration3 + gameObject.transform.position);
     }

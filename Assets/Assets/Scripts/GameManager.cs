@@ -11,10 +11,12 @@ public class GameManager : MonoBehaviour
     public float energyPerSecondLoss = 1f;
     public float energyPerSizeLoss = 0.2f;
     public float defaultDivisionEnergy = 15f;
+    public int maxSkill = 10;
+    public int minSkill = 0;
+    public int maxSkillSum = 30;
 
     //Balance factors
     //Attack deals more damage
-    public float attackFactor = 2;
     //Mass spends more energy
     float massFactor = 0.75f;
 
