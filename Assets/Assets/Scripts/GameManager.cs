@@ -17,7 +17,6 @@ public class GameManager : MonoBehaviour
 
     //Balance factors
     //Attack deals more damage
-    public float attackFactor = 2;
     //Mass spends more energy
     float massFactor = 0.75f;
 

@@ -19,7 +19,7 @@ public class Genome
         new Skill("Speed", GameManager.instance.minSkill,GameManager.instance.maxSkill, 0.1f),
         new Skill("Vision", GameManager.instance.minSkill,GameManager.instance.maxSkill, 1f),
         new Skill("Food", GameManager.instance.minSkill,GameManager.instance.maxSkill, 0.5f),
-        new Skill("Attack", GameManager.instance.minSkill,GameManager.instance.maxSkill, 0.5f),
+        new Skill("Attack", GameManager.instance.minSkill,GameManager.instance.maxSkill, 1f),
         new Skill("Size", 5, 5, 0.2f) //Disabled for now
     };
 

@@ -203,7 +203,7 @@ public class Bacterium : MonoBehaviour
             attackCooldown += attackCooldownAdd;
 
             //Deals damage, steals energy
-            float damage = Mathf.Max(0f,genome.AttackSkill.Effect * GameManager.instance.attackFactor);
+            float damage = Mathf.Max(0f,genome.AttackSkill.Effect);
             damage = Mathf.Min(damage, other.energy);
             Eat(damage);
             other.TakeDamage(damage);
