@@ -30,10 +30,12 @@ public class GameManager : MonoBehaviour
     Transform foodHolder;
     Transform bacteriumHolder;
 
-    private float spawnFoodTick = 0.25f;
+    private float spawnFoodTickDelay = 0.25f;
+    public float AITickDelay = 0.5f;
+
     private int SpawnFoodPerTick
     {
-        get => Mathf.RoundToInt(Mathf.Max(StartNumberOfFood / 15, 1) * spawnFoodTick);
+        get => Mathf.RoundToInt(Mathf.Max(StartNumberOfFood / 15, 1) * spawnFoodTickDelay);
     }
 
     void Start()
@@ -71,7 +73,7 @@ public class GameManager : MonoBehaviour
             for(int i = 0; i < SpawnFoodPerTick; i++)
                 SpawnFoodAtRandomLocation();
 
-            yield return new WaitForSeconds(spawnFoodTick);
+            yield return new WaitForSeconds(spawnFoodTickDelay);
         }
     }
 
