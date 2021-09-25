@@ -1,4 +1,6 @@
 ﻿using UnityEngine;
+using System.Collections;
+using System.Collections.Generic;
 
 public class GameManager : MonoBehaviour
 {
@@ -19,12 +21,22 @@ public class GameManager : MonoBehaviour
     //Attack deals more damage
     //Mass spends more energy
     float massFactor = 0.75f;
+    public float immunityCooldown = 0.1f;
+    public float attackCooldown = 1f;
 
     public int recentGenomeID = 0;
     public int recentBacteriumID = 0;
 
     Transform foodHolder;
     Transform bacteriumHolder;
+
+    private float spawnFoodTickDelay = 0.25f;
+    public float AITickDelay = 0.5f;
+
+    private int SpawnFoodPerTick
+    {
+        get => Mathf.RoundToInt(Mathf.Max(StartNumberOfFood / 15, 1) * spawnFoodTickDelay);
+    }
 
     void Start()
     {
@@ -46,20 +58,22 @@ public class GameManager : MonoBehaviour
         }
         for (int i = 0; i < StartNumberOfFood; i++)
         {
-            Vector2 spawnPoint = new Vector2(Random.Range(-gameArea.x, gameArea.x), Random.Range(-gameArea.y, gameArea.y));
-            SpawnFood(spawnPoint);
+            SpawnFoodAtRandomLocation();
         }
+        StartCoroutine(SpawnFoodTick());
 
         Camera camera = gameObject.GetComponent<Camera>();
         camera.orthographicSize = gameArea.x;
     }
 
-    void FixedUpdate()
+    private IEnumerator SpawnFoodTick()
     {
-        for(int foodSpawns = Mathf.Max(StartNumberOfFood/500,1); foodSpawns > 0; foodSpawns--)
+        while (Application.isPlaying)
         {
-            Vector2 spawnPoint = new Vector2(Random.Range(-gameArea.x, gameArea.x), Random.Range(-gameArea.y, gameArea.y));
-            SpawnFood(spawnPoint);
+            for(int i = 0; i < SpawnFoodPerTick; i++)
+                SpawnFoodAtRandomLocation();
+
+            yield return new WaitForSeconds(spawnFoodTickDelay);
         }
     }
 
@@ -76,8 +90,10 @@ public class GameManager : MonoBehaviour
 
         return newBacterium;
     }
-    public void SpawnFood(Vector2 spawnPoint)
+    public void SpawnFoodAtRandomLocation()
     {
+        Vector2 spawnPoint = new Vector2(Random.Range(-gameArea.x, gameArea.x), Random.Range(-gameArea.y, gameArea.y));
+
         GameObject food = Instantiate(GameAssets.instance.food, spawnPoint, Quaternion.identity);
 
         food.name = $"Food";

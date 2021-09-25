@@ -218,8 +218,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4256c8eb893faec4cb87fae96f4d38e8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  gameArea: {x: 60, y: 60}
-  StartNumberOfFood: 2000
+  gameArea: {x: 120, y: 120}
+  StartNumberOfFood: 3000
   StartNumberOfBacteria: 400
   mutationBeforeNewID: 10
   energyPerSecondLoss: 0.25
@@ -228,9 +228,11 @@ MonoBehaviour:
   maxSkill: 10
   minSkill: 0
   maxSkillSum: 25
-  attackFactor: 2
+  immunityCooldown: 0.1
+  attackCooldown: 1
   recentGenomeID: 0
   recentBacteriumID: 0
+  AITickDelay: 0.1
 --- !u!114 &1148454233
 MonoBehaviour:
   m_ObjectHideFlags: 0

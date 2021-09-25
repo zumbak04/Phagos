@@ -1,54 +1,55 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public class Bacterium : MonoBehaviour
 {
     //Stats
     [SerializeField]
-    float age = 0f;
-    public float energy = 0f;
+    private float age = 0f;
     [SerializeField]
-    float energyCost = 0f;
+    private float energy = 0f;
+    [SerializeField]
+    private float energyCost = 0f;
 
-    float startEnergy = 10f;
+    private float startEnergy = 10f;
     [SerializeField]
-    float divisionEnergy = 15f;
+    private float divisionEnergy = 15f;
 
-    static float immunityCooldownAdd = 0.1f;
-    static float attackCooldownAdd = 1f;
     [SerializeField]
-    float immunityCooldown = immunityCooldownAdd;
+    private float immunityCooldown;
     [SerializeField]
-    float attackCooldown = 0f;
+    private float attackCooldown = 0f;
 
     Rigidbody2D rigidBody;
     [SerializeField]
     NN nn;
 
-    public Genome genome;
+    [SerializeField]
+    private Genome genome;
 
     //Objects around
     //0 is food
     //1 is enemy
     //2 is pray
     //3 is friend
-    static int maxObject = 4;
-    float[] inputs = new float[maxObject];
-    float[] objectCount = new float[maxObject];
-    Vector3[] objectVectors = new Vector3[maxObject];
+    private static int maxObject = 4;
+    private float[] inputs = new float[maxObject];
+    private float[] objectCount = new float[maxObject];
+    private Vector3[] objectVectors = new Vector3[maxObject];
 
-    Vector2 acceleration;
+    private Vector2 acceleration = new Vector2();
 
-    GameObject filterMouthObject;
-    GameObject jawObject;
-    GameObject flagellasObject;
-    GameObject eyesObject;
+    private GameObject filterMouthObject;
+    private GameObject jawObject;
+    private GameObject flagellasObject;
+    private GameObject eyesObject;
 
     private bool takingDamageAnimation = false;
 
     [SerializeField]
     private float _size = 1;
-    public float size
+    public float Size
     {
         get
         {
@@ -61,7 +62,7 @@ public class Bacterium : MonoBehaviour
         }
     }
 
-    void Awake()
+    private void Awake()
     {
         rigidBody = gameObject.GetComponent<Rigidbody2D>();
         filterMouthObject = gameObject.transform.GetChild(0).gameObject;
@@ -69,7 +70,13 @@ public class Bacterium : MonoBehaviour
         flagellasObject = gameObject.transform.GetChild(2).gameObject;
         eyesObject = gameObject.transform.GetChild(3).gameObject;
 
+        immunityCooldown = GameManager.instance.immunityCooldown;
+
         if (energy == 0) energy = startEnergy;
+    }
+    private void Start()
+    {
+        StartCoroutine(AITick());
     }
 
     // Update is called once per frame
@@ -86,88 +93,97 @@ public class Bacterium : MonoBehaviour
 
     private void FixedUpdate()
     {
-        Collider2D[] colliders = Physics2D.OverlapCircleAll(transform.position, genome.VisionSkill.Effect);
-
-        //Clears count and vectors
-        for (int i = 0; i < maxObject; i++)
-        {
-            objectCount[i] = 0;
-            objectVectors[i] = new Vector3(0f, 0f, 0f);
-        }
-        //Analyzes every object, finds vectors to centers of mass
-        for (int i = 0; i < colliders.Length; i++)
-        {
-            Vector3 vectorToObject = colliders[i].gameObject.transform.position - transform.position;
-
-            //Skips itself
-            if (colliders[i].gameObject == gameObject) continue;
-            //Food is exception, finds direct vector to food unless you can't eat it
-            if (colliders[i].gameObject.tag == "Food" && genome.FoodSkill.Effect > 0)
-            {
-                objectCount[0]++;
-                if (vectorToObject.magnitude < objectVectors[0].magnitude || objectVectors[0].magnitude == 0)
-                    objectVectors[0] = vectorToObject;
-            }
-            else if (colliders[i].gameObject.TryGetComponent<Bacterium>(out Bacterium other))
-            {
-                if (other.genome.genomeID == genome.genomeID)
-                {
-                    objectCount[3]++;
-                    objectVectors[3] += vectorToObject;
-                }
-                //Pray is another exception, finds direct vector to pray
-                else if (other.genome.AttackSkill.Effect < genome.AttackSkill.Effect)
-                {
-                    objectCount[2]++;
-                    if (vectorToObject.magnitude < objectVectors[2].magnitude || objectVectors[2].magnitude == 0)
-                        objectVectors[2] = vectorToObject;
-                }
-                else
-                {
-                    objectCount[1]++;
-                    objectVectors[1] += vectorToObject;
-                }
-            }
-        }
-        //Merges object count and vectors to create inputs for NN
-        for (int i = 0; i < maxObject; i++)
-        {
-            if (objectCount[i] > 0)
-            {
-                //Food and pray are exceptions
-                if (i != 0 && i != 2)
-                    objectVectors[i] /= objectCount[i];
-                inputs[i] = objectVectors[i].magnitude;
-            }
-            else
-            {
-                inputs[i] = 0f;
-            }
-        }
-
-        //NN tells how to react to every object vector, merges them to set target
-        float[] outputs = nn.Move(inputs);
-        Vector2 target = new Vector2(0, 0);
-        for (int i = 0; i < maxObject; i++)
-        {
-            if (objectCount[i] > 0)
-            {
-                Vector2 objectDirection = new Vector2(objectVectors[i].x, objectVectors[i].y);
-                objectDirection.Normalize();
-                target += objectDirection * outputs[i];
-            }
-        }
-        if (target.magnitude > 1f) target.Normalize();
-
         //Moves bacterium to its target
         Vector2 velocity = rigidBody.velocity;
-        acceleration = target * genome.SpeedSkill.Effect;
         velocity += acceleration;
         //To avoid skidding
         velocity *= 0.95f;
         rigidBody.velocity = velocity;
 
         SpendEnergy();
+    }
+
+    private IEnumerator AITick()
+    {
+        while (Application.isPlaying)
+        {
+            Collider2D[] colliders = Physics2D.OverlapCircleAll(transform.position, genome.VisionSkill.Effect);
+
+            //Clears count and vectors
+            for (int i = 0; i < maxObject; i++)
+            {
+                objectCount[i] = 0;
+                objectVectors[i] = new Vector3(0f, 0f, 0f);
+            }
+            //Analyzes every object, finds vectors to centers of mass
+            for (int i = 0; i < colliders.Length; i++)
+            {
+                Vector3 vectorToObject = colliders[i].gameObject.transform.position - transform.position;
+
+                //Skips itself
+                if (colliders[i].gameObject == gameObject) continue;
+                //Food is exception, finds direct vector to food unless you can't eat it
+                if (colliders[i].gameObject.tag == "Food" && genome.FoodSkill.Effect > 0)
+                {
+                    objectCount[0]++;
+                    if (vectorToObject.magnitude < objectVectors[0].magnitude || objectVectors[0].magnitude == 0)
+                        objectVectors[0] = vectorToObject;
+                }
+                else if (colliders[i].gameObject.TryGetComponent<Bacterium>(out Bacterium other))
+                {
+                    if (other.genome.genomeID == genome.genomeID)
+                    {
+                        objectCount[3]++;
+                        objectVectors[3] += vectorToObject;
+                    }
+                    //Pray is another exception, finds direct vector to pray
+                    else if (other.genome.AttackSkill.Effect < genome.AttackSkill.Effect)
+                    {
+                        objectCount[2]++;
+                        if (vectorToObject.magnitude < objectVectors[2].magnitude || objectVectors[2].magnitude == 0)
+                            objectVectors[2] = vectorToObject;
+                    }
+                    else
+                    {
+                        objectCount[1]++;
+                        objectVectors[1] += vectorToObject;
+                    }
+                }
+            }
+            //Merges object count and vectors to create inputs for NN
+            for (int i = 0; i < maxObject; i++)
+            {
+                if (objectCount[i] > 0)
+                {
+                    //Food and pray are exceptions
+                    if (i != 0 && i != 2)
+                        objectVectors[i] /= objectCount[i];
+                    inputs[i] = objectVectors[i].magnitude;
+                }
+                else
+                {
+                    inputs[i] = 0f;
+                }
+            }
+
+            //NN tells how to react to every object vector, merges them to set target
+            float[] outputs = nn.Calculate(inputs);
+            Vector2 target = new Vector2(0, 0);
+            for (int i = 0; i < maxObject; i++)
+            {
+                if (objectCount[i] > 0)
+                {
+                    Vector2 objectDirection = new Vector2(objectVectors[i].x, objectVectors[i].y);
+                    objectDirection.Normalize();
+                    target += objectDirection * outputs[i];
+                }
+            }
+            if (target.magnitude > 1f) target.Normalize();
+
+            acceleration = target * genome.SpeedSkill.Effect;
+
+            yield return new WaitForSeconds(GameManager.instance.AITickDelay);
+        }
     }
 
     public void Die()
@@ -200,7 +216,7 @@ public class Bacterium : MonoBehaviour
             if (genome.genomeID == other.genome.genomeID) return;
 
             //Adds attack cooldown
-            attackCooldown += attackCooldownAdd;
+            attackCooldown += GameManager.instance.attackCooldown;
 
             //Deals damage, steals energy
             float damage = Mathf.Max(0f,genome.AttackSkill.Effect);
@@ -242,7 +258,7 @@ public class Bacterium : MonoBehaviour
         }
 
         //Size
-        size = genome.SizeSkill.Effect;
+        Size = genome.SizeSkill.Effect;
         rigidBody.mass = GameManager.instance.CountMass(rigidBody);
         divisionEnergy = GameManager.instance.defaultDivisionEnergy * rigidBody.mass;
 
@@ -323,7 +339,7 @@ public class Bacterium : MonoBehaviour
 
     public void TakeDamage(float damage)
     {
-        immunityCooldown += immunityCooldownAdd;
+        immunityCooldown += GameManager.instance.immunityCooldown;
 
         energy -= damage;
 
@@ -339,22 +355,22 @@ public class Bacterium : MonoBehaviour
     {
         takingDamageAnimation = true;
 
-        float oldSize = size;
-        float newSize = size * 0.85f;
+        float oldSize = Size;
+        float newSize = Size * 0.85f;
         float changePerTick = (oldSize - newSize);
         //Grows to new size
-        while (size > newSize)
+        while (Size > newSize)
         {
-            size = size - changePerTick;
+            Size = Size - changePerTick;
             yield return new WaitForSeconds(0.1f);
         }
         //Shrinks to old size
-        while (size < oldSize)
+        while (Size < oldSize)
         {
-            size = size + changePerTick;
+            Size = Size + changePerTick;
             yield return new WaitForSeconds(0.1f);
         }
-        size = oldSize;
+        Size = oldSize;
 
         takingDamageAnimation = false;
     }

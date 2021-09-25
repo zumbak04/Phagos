@@ -6,7 +6,7 @@ public class NN
 {
     public Layer[] layers;
 
-    public Layer lastLayer { get { return layers[layers.Length - 1]; } }
+    public Layer lastLayer { get => layers[layers.Length - 1]; }
 
     public NN(params int[] sizes)
     {
@@ -26,7 +26,7 @@ public class NN
         }
     }
 
-    public float[] Move(float[] inputs)
+    public float[] Calculate(float[] inputs)
     {
         //Passes inputs to the first layer
         layers[0].neuronValues = inputs;
