@@ -167,7 +167,7 @@ public class Bacterium : MonoBehaviour
             }
 
             //NN tells how to react to every object vector, merges them to set target
-            float[] outputs = nn.Move(inputs);
+            float[] outputs = nn.Calculate(inputs);
             Vector2 target = new Vector2(0, 0);
             for (int i = 0; i < maxObject; i++)
             {
