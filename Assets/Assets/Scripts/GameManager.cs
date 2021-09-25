@@ -61,9 +61,6 @@ public class GameManager : MonoBehaviour
             SpawnFoodAtRandomLocation();
         }
         StartCoroutine(SpawnFoodTick());
-
-        Camera camera = gameObject.GetComponent<Camera>();
-        camera.orthographicSize = gameArea.x;
     }
 
     private IEnumerator SpawnFoodTick()

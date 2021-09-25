@@ -64,6 +64,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assets\Assets\Scripts\Bacterium.cs" />
+    <Compile Include="Assets\Assets\Scripts\CameraController.cs" />
     <Compile Include="Assets\Assets\Scripts\GameAssets.cs" />
     <Compile Include="Assets\Assets\Scripts\GameManager.cs" />
     <Compile Include="Assets\Assets\Scripts\Genome.cs" />
