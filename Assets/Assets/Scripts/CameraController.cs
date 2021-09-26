@@ -10,12 +10,10 @@ public class CameraController : MonoBehaviour
     private float scrollSpeed = 500f;
     private float panBorderThickness = 10f;
     [SerializeField]
-    private bool isMoving = false;
-    [SerializeField]
     private Vector3 moveDirection;
 
     [SerializeField]
-    private float movingTimer;
+    private float panningTimer;
     private float secsBeforeSpeedUp = 0.5f;
     private float speedupFactor = 2f;
 
@@ -26,7 +24,7 @@ public class CameraController : MonoBehaviour
     {
         get
         {
-            if (movingTimer >= secsBeforeSpeedUp)
+            if (panningTimer >= secsBeforeSpeedUp)
                 return panSpeed * speedupFactor;
             else
                 return panSpeed;
@@ -42,6 +40,7 @@ public class CameraController : MonoBehaviour
     {
         Vector3 pos = transform.position;
 
+        //Pan
         Vector3 screenCenter = new Vector3(Screen.width / 2, Screen.height / 2, 0);
         moveDirection = Input.mousePosition - screenCenter;
         moveDirection.Normalize();
@@ -50,22 +49,22 @@ public class CameraController : MonoBehaviour
         Vector3 endBorders = new Vector2(Screen.width - panBorderThickness, Screen.height - panBorderThickness);
 
         if (Input.mousePosition.x >= endBorders.x || Input.mousePosition.y >= endBorders.y || Input.mousePosition.x <= startBorders.x || Input.mousePosition.y <= startBorders.y)
+        {
             pos += PanSpeed * Time.deltaTime * moveDirection;
+            panningTimer += Time.deltaTime;
+        }
+        else
+            panningTimer = 0;
 
+        //Drag
+        if (Input.GetMouseButtonDown(2))
+        {
+            Vector3 mouseStart = Input.mousePosition;
+        }
+
+        //Scroll
         cameraObj.orthographicSize -= Input.GetAxis("Mouse ScrollWheel") * scrollSpeed * Time.deltaTime;
         cameraObj.orthographicSize = Mathf.Clamp(cameraObj.orthographicSize, minCameraSize, maxCameraSize);
-
-        //Is it moving?
-        if (pos.x == transform.position.x && pos.y == transform.position.y)
-            isMoving = false;
-        else
-            isMoving = true;
-
-        //Timers
-        if (isMoving)
-            movingTimer += Time.deltaTime;
-        else
-            movingTimer = 0;
 
         //Borders
         float cameraSize = cameraObj.orthographicSize;
