@@ -8,7 +8,7 @@ public class CameraController : MonoBehaviour
 
     [SerializeField]
     bool isPanning;
-    private float panSpeed = 10f;
+    private float panSpeed = 20f;
     private float panBorderThickness = 10f;
     [SerializeField]
     private float panningTimer;
@@ -21,7 +21,7 @@ public class CameraController : MonoBehaviour
     Vector3 dragOrigin = Vector3.zero;
     float dragSpeed = 0.3f;
 
-    private float scrollSpeed = 500f;
+    private float scrollSpeed = 1000f;
     private float minCameraSize = 5f;
     private float maxCameraSize = 20f;
 
