@@ -6,17 +6,22 @@ public class CameraController : MonoBehaviour
 {
     Camera cameraObj;
 
-    private float panSpeed = 15f;
-    private float scrollSpeed = 500f;
-    private float panBorderThickness = 10f;
     [SerializeField]
-    private Vector3 moveDirection;
-
+    bool isPanning;
+    private float panSpeed = 10f;
+    private float panBorderThickness = 10f;
     [SerializeField]
     private float panningTimer;
     private float secsBeforeSpeedUp = 0.5f;
     private float speedupFactor = 2f;
+    private Vector3 moveDirection;
 
+    [SerializeField]
+    bool isDragging;
+    Vector3 dragOrigin = Vector3.zero;
+    float dragSpeed = 0.3f;
+
+    private float scrollSpeed = 500f;
     private float minCameraSize = 5f;
     private float maxCameraSize = 20f;
 
@@ -41,26 +46,42 @@ public class CameraController : MonoBehaviour
         Vector3 pos = transform.position;
 
         //Pan
-        Vector3 screenCenter = new Vector3(Screen.width / 2, Screen.height / 2, 0);
-        moveDirection = Input.mousePosition - screenCenter;
-        moveDirection.Normalize();
-
-        Vector2 startBorders = new Vector2(panBorderThickness, panBorderThickness);
-        Vector3 endBorders = new Vector2(Screen.width - panBorderThickness, Screen.height - panBorderThickness);
-
-        if (Input.mousePosition.x >= endBorders.x || Input.mousePosition.y >= endBorders.y || Input.mousePosition.x <= startBorders.x || Input.mousePosition.y <= startBorders.y)
+        if (!isDragging)
         {
-            pos += PanSpeed * Time.deltaTime * moveDirection;
-            panningTimer += Time.deltaTime;
+            Vector3 screenCenter = new Vector3(Screen.width / 2, Screen.height / 2, 0);
+            moveDirection = Input.mousePosition - screenCenter;
+            moveDirection.Normalize();
+
+            Vector2 startBorders = new Vector2(panBorderThickness, panBorderThickness);
+            Vector3 endBorders = new Vector2(Screen.width - panBorderThickness, Screen.height - panBorderThickness);
+
+            if (Input.mousePosition.x >= endBorders.x || Input.mousePosition.y >= endBorders.y || Input.mousePosition.x <= startBorders.x || Input.mousePosition.y <= startBorders.y)
+            {
+                isPanning = true;
+
+                pos += PanSpeed * Time.deltaTime * moveDirection;
+                panningTimer += Time.deltaTime;
+            }
+            else
+            {
+                isPanning = false;
+
+                panningTimer = 0;
+            }
         }
-        else
-            panningTimer = 0;
 
         //Drag
         if (Input.GetMouseButtonDown(2))
+            dragOrigin = cameraObj.ScreenToWorldPoint(Input.mousePosition);
+        if (Input.GetMouseButton(2))
         {
-            Vector3 mouseStart = Input.mousePosition;
+            isDragging = true;
+
+            Vector3 dragMove = cameraObj.ScreenToWorldPoint(Input.mousePosition) - dragOrigin;
+            pos -= dragMove * dragSpeed;
         }
+        else
+            isDragging = false;
 
         //Scroll
         cameraObj.orthographicSize -= Input.GetAxis("Mouse ScrollWheel") * scrollSpeed * Time.deltaTime;
