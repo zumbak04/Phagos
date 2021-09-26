@@ -134,6 +134,7 @@ GameObject:
   - component: {fileID: 1148454229}
   - component: {fileID: 1148454232}
   - component: {fileID: 1148454233}
+  - component: {fileID: 1148454234}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -200,7 +201,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1148454228}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: -10}
+  m_LocalPosition: {x: 0, y: 0, z: -15}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -248,3 +249,18 @@ MonoBehaviour:
   bacterium: {fileID: 515172945297576299, guid: 243c53b3ba2990c409065083f1fcf509,
     type: 3}
   food: {fileID: 6767552424817328216, guid: 6a94eec466fc43645925f86f07982864, type: 3}
+--- !u!114 &1148454234
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1148454228}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3196469520d4dda48b3bebf8c0f3c30b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  isMoving: 0
+  moveDirection: {x: 0, y: 0, z: 0}
+  movingTimer: 0
