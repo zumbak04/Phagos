@@ -19,6 +19,9 @@ public class CameraController : MonoBehaviour
     private float secsBeforeSpeedUp = 0.5f;
     private float speedupFactor = 2f;
 
+    private float minCameraSize = 5f;
+    private float maxCameraSize = 20f;
+
     private float PanSpeed
     {
         get
@@ -50,6 +53,7 @@ public class CameraController : MonoBehaviour
             pos += PanSpeed * Time.deltaTime * moveDirection;
 
         cameraObj.orthographicSize -= Input.GetAxis("Mouse ScrollWheel") * scrollSpeed * Time.deltaTime;
+        cameraObj.orthographicSize = Mathf.Clamp(cameraObj.orthographicSize, minCameraSize, maxCameraSize);
 
         //Is it moving?
         if (pos.x == transform.position.x && pos.y == transform.position.y)
@@ -62,6 +66,11 @@ public class CameraController : MonoBehaviour
             movingTimer += Time.deltaTime;
         else
             movingTimer = 0;
+
+        //Borders
+        float cameraSize = cameraObj.orthographicSize;
+        pos.x = Mathf.Clamp(pos.x, -(GameManager.instance.gameArea.x - cameraSize), GameManager.instance.gameArea.x - cameraSize);
+        pos.y = Mathf.Clamp(pos.y, -(GameManager.instance.gameArea.y - cameraSize), GameManager.instance.gameArea.y - cameraSize);
 
         transform.position = pos;
     }
