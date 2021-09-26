@@ -6,14 +6,16 @@ public class CameraController : MonoBehaviour
 {
 
     private float panSpeed = 10f;
+    private float scrollSpeed = 2f;
     private float panBorderThickness = 10f;
-
     [SerializeField]
     private bool isMoving = false;
+    [SerializeField]
+    private Vector3 moveDirection;
 
     [SerializeField]
     private float movingTimer;
-    private float secsBeforeSpeedUp = 0.75f;
+    private float secsBeforeSpeedUp = 0.5f;
     private float speedupFactor = 2f;
 
     private float PanSpeed
@@ -27,25 +29,27 @@ public class CameraController : MonoBehaviour
         }
     }
 
-    // Update is called once per frame
     void Update()
     {
         Vector3 pos = transform.position;
 
-        if (Input.mousePosition.x >= Screen.width - panBorderThickness)
-            pos.x += PanSpeed * Time.deltaTime;
-        if (Input.mousePosition.x <= panBorderThickness)
-            pos.x -= PanSpeed * Time.deltaTime;
-        if (Input.mousePosition.y >= Screen.height - panBorderThickness)
-            pos.y += PanSpeed * Time.deltaTime;
-        if (Input.mousePosition.y <= panBorderThickness)
-            pos.y -= PanSpeed * Time.deltaTime;
+        Vector3 screenCenter = new Vector3(Screen.width / 2, Screen.height / 2, 0);
+        moveDirection = Input.mousePosition - screenCenter;
+        moveDirection.Normalize();
 
-        if (pos == transform.position)
+        Vector2 startBorders = new Vector2(panBorderThickness, panBorderThickness);
+        Vector3 endBorders = new Vector2(Screen.width - panBorderThickness, Screen.height - panBorderThickness);
+
+        if (Input.mousePosition.x >= endBorders.x || Input.mousePosition.y >= endBorders.y || Input.mousePosition.x <= startBorders.x || Input.mousePosition.y <= startBorders.y)
+            pos += PanSpeed * Time.deltaTime * moveDirection;
+
+        //Is it moving?
+        if (pos.x == transform.position.x && pos.y == transform.position.y)
             isMoving = false;
         else
             isMoving = true;
 
+        //Timers
         if (isMoving)
             movingTimer += Time.deltaTime;
         else
