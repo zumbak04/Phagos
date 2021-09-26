@@ -4,9 +4,10 @@ using UnityEngine;
 
 public class CameraController : MonoBehaviour
 {
+    Camera cameraObj;
 
-    private float panSpeed = 10f;
-    private float scrollSpeed = 2f;
+    private float panSpeed = 15f;
+    private float scrollSpeed = 500f;
     private float panBorderThickness = 10f;
     [SerializeField]
     private bool isMoving = false;
@@ -29,6 +30,11 @@ public class CameraController : MonoBehaviour
         }
     }
 
+    private void Awake()
+    {
+        cameraObj = gameObject.GetComponent<Camera>();
+    }
+
     void Update()
     {
         Vector3 pos = transform.position;
@@ -42,6 +48,8 @@ public class CameraController : MonoBehaviour
 
         if (Input.mousePosition.x >= endBorders.x || Input.mousePosition.y >= endBorders.y || Input.mousePosition.x <= startBorders.x || Input.mousePosition.y <= startBorders.y)
             pos += PanSpeed * Time.deltaTime * moveDirection;
+
+        cameraObj.orthographicSize -= Input.GetAxis("Mouse ScrollWheel") * scrollSpeed * Time.deltaTime;
 
         //Is it moving?
         if (pos.x == transform.position.x && pos.y == transform.position.y)
