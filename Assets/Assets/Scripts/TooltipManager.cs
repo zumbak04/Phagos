@@ -8,6 +8,7 @@ public class TooltipManager : MonoBehaviour
     public static TooltipManager _instance;
 
     public TextMeshProUGUI textObj;
+    [HideInInspector]
     public GameObject attachObj = null;
     public GameObject cameraObj;
     private Camera cameraCom;
