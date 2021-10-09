@@ -89,8 +89,8 @@ public class CameraController : MonoBehaviour
 
         //Borders
         float cameraSize = cameraObj.orthographicSize;
-        pos.x = Mathf.Clamp(pos.x, -(GameManager.instance.gameArea.x - cameraSize), GameManager.instance.gameArea.x - cameraSize);
-        pos.y = Mathf.Clamp(pos.y, -(GameManager.instance.gameArea.y - cameraSize), GameManager.instance.gameArea.y - cameraSize);
+        pos.x = Mathf.Clamp(pos.x, -(GameManager._instance.gameArea.x - cameraSize), GameManager._instance.gameArea.x - cameraSize);
+        pos.y = Mathf.Clamp(pos.y, -(GameManager._instance.gameArea.y - cameraSize), GameManager._instance.gameArea.y - cameraSize);
 
         transform.position = pos;
     }

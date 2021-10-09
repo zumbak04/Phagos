@@ -16,10 +16,10 @@ public class Genome
     [SerializeField]
     private Skill[] skills =
     {
-        new Skill("Speed", GameManager.instance.minSkill,GameManager.instance.maxSkill, 0.1f),
-        new Skill("Vision", GameManager.instance.minSkill,GameManager.instance.maxSkill, 1f),
-        new Skill("Food", GameManager.instance.minSkill,GameManager.instance.maxSkill, 0.5f),
-        new Skill("Attack", GameManager.instance.minSkill,GameManager.instance.maxSkill, 0.5f),
+        new Skill("Speed", GameManager._instance.minSkill,GameManager._instance.maxSkill, 0.1f),
+        new Skill("Vision", GameManager._instance.minSkill,GameManager._instance.maxSkill, 1f),
+        new Skill("Food", GameManager._instance.minSkill,GameManager._instance.maxSkill, 0.5f),
+        new Skill("Attack", GameManager._instance.minSkill,GameManager._instance.maxSkill, 0.5f),
         new Skill("Size", 5, 5, 0.2f) //Disabled for now
     };
 
@@ -75,7 +75,7 @@ public class Genome
     public void Mutate(float mutationFactor)
     {
         mutationCount++;
-        if(mutationCount % GameManager.instance.mutationBeforeNewID == 0)
+        if(mutationCount % GameManager._instance.mutationBeforeNewID == 0)
             UpdateGenomeID();
 
         for (int i = 0; i < weights.Length; i++)
@@ -94,8 +94,8 @@ public class Genome
     }
     public void UpdateGenomeID()
     {
-        GameManager.instance.recentGenomeID++;
-        genomeID = GameManager.instance.recentGenomeID;
+        GameManager._instance.recentGenomeID++;
+        genomeID = GameManager._instance.recentGenomeID;
     }
     public Color GenerateColor()
     {

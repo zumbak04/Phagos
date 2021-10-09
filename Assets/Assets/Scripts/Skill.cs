@@ -54,7 +54,7 @@ public class Skill
 
     public void ChangeLevel(int skillLevelSum, int change)
     {
-        if(skillLevelSum + change <= GameManager.instance.maxSkillSum)
+        if(skillLevelSum + change <= GameManager._instance.maxSkillSum)
         {
             _level += change;
             _level = Mathf.Clamp(_level, _min, _max);
