@@ -167,8 +167,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   message: Aaa!
-  onClick: 0
-  onMouseOver: 1
+  onClick: 1
+  onMouseOver: 0
 --- !u!1 &3505681932696426641
 GameObject:
   m_ObjectHideFlags: 0
