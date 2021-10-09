@@ -31,8 +31,10 @@ public class TooltipManager : MonoBehaviour
 
 	private void Update()
     {
-        if(attachObj != null)
+        if (attachObj != null)
             transform.position = cameraCom.WorldToScreenPoint(attachObj.transform.position);
+        else
+            Hide();
     }
 
     public void SetAndShow(string message, GameObject gameObj)
