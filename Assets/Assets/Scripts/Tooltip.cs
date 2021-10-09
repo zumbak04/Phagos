@@ -4,12 +4,17 @@ public class Tooltip : MonoBehaviour
 {
     public string message;
 
+    public bool onClick = false;
+    public bool onMouseOver = false;
+
     private void OnMouseEnter()
     {
-        TooltipManager._instance.SetAndShow(message);
+        if(onMouseOver)
+            TooltipManager._instance.SetAndShow(message, gameObject);
     }
     private void OnMouseExit()
     {
-        TooltipManager._instance.Hide();
+        if (onMouseOver)
+            TooltipManager._instance.Hide();
     }
 }

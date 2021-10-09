@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 2114758294942059406}
   - component: {fileID: 3418474834506865306}
   - component: {fileID: 8072171648350698940}
-  - component: {fileID: -6665443634693891361}
+  - component: {fileID: -989552980370481934}
   m_Layer: 0
   m_Name: BacteriumPrefab
   m_TagString: Untagged
@@ -115,6 +115,7 @@ MonoBehaviour:
     weights: []
     color: {r: 0, g: 0, b: 0, a: 0}
     skills: []
+  birthPlace: {x: 0, y: 0}
   _size: 1
 --- !u!70 &3418474834506865306
 CapsuleCollider2D:
@@ -153,7 +154,7 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 0
---- !u!114 &-6665443634693891361
+--- !u!114 &-989552980370481934
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -166,6 +167,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   message: Meow!
+  onClick: 0
+  onMouseOver: 1
 --- !u!1 &3505681932696426641
 GameObject:
   m_ObjectHideFlags: 0
