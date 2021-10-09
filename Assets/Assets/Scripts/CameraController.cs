@@ -7,7 +7,7 @@ public class CameraController : MonoBehaviour
     Camera cameraObj;
 
     [SerializeField]
-    bool isPanning;
+    //bool isPanning;
     private float panSpeed = 20f;
     private float panBorderThickness = 10f;
     [SerializeField]
@@ -57,14 +57,14 @@ public class CameraController : MonoBehaviour
 
             if (Input.mousePosition.x >= endBorders.x || Input.mousePosition.y >= endBorders.y || Input.mousePosition.x <= startBorders.x || Input.mousePosition.y <= startBorders.y)
             {
-                isPanning = true;
+                //isPanning = true;
 
                 pos += PanSpeed * Time.deltaTime * moveDirection;
                 panningTimer += Time.deltaTime;
             }
             else
             {
-                isPanning = false;
+                //isPanning = false;
 
                 panningTimer = 0;
             }
