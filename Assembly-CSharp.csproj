@@ -72,6 +72,7 @@
     <Compile Include="Assets\Assets\Scripts\NN.cs" />
     <Compile Include="Assets\Assets\Scripts\Neuron.cs" />
     <Compile Include="Assets\Assets\Scripts\Skill.cs" />
+    <Compile Include="Assets\Assets\Scripts\Target.cs" />
     <Compile Include="Assets\Assets\Scripts\Tooltip.cs" />
     <Compile Include="Assets\Assets\Scripts\TooltipManager.cs" />
     <None Include="Assets\TextMesh Pro\Resources\Shaders\TMPro.cginc" />

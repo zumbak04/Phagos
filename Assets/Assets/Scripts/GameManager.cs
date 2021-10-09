@@ -52,7 +52,7 @@ public class GameManager : MonoBehaviour
 
         for (int i = 0; i < StartNumberOfBacteria; i++)
         {
-            Genome genome = new Genome(64);
+            Genome genome = new Genome(100);
             Vector2 spawnPoint = new Vector2(Random.Range(-gameArea.x, gameArea.x), Random.Range(-gameArea.y, gameArea.y));
             SpawnBacterium(spawnPoint, genome);
         }

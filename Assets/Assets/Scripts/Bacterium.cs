@@ -33,12 +33,15 @@ public class Bacterium : MonoBehaviour
     //1 is enemy
     //2 is pray
     //3 is friend
-    private static int maxObject = 4;
+    //4 is birth place
+    private static int maxObject = 5;
     private float[] inputs = new float[maxObject];
-    private float[] objectCount = new float[maxObject];
-    private Vector3[] objectVectors = new Vector3[maxObject];
+    [SerializeField]
+    private Target[] targets = new Target[maxObject];
 
     private Vector2 acceleration = new Vector2();
+    [SerializeField]
+    private Vector2 birthPlace;
 
     private GameObject filterMouthObject;
     private GameObject jawObject;
@@ -110,10 +113,9 @@ public class Bacterium : MonoBehaviour
             Collider2D[] colliders = Physics2D.OverlapCircleAll(transform.position, genome.VisionSkill.Effect);
 
             //Clears count and vectors
-            for (int i = 0; i < maxObject; i++)
+            for (int i = 0; i < targets.Length; i++)
             {
-                objectCount[i] = 0;
-                objectVectors[i] = new Vector3(0f, 0f, 0f);
+                targets[i] = new Target(Vector3.zero, 0);
             }
             //Analyzes every object, finds vectors to centers of mass
             for (int i = 0; i < colliders.Length; i++)
@@ -125,40 +127,42 @@ public class Bacterium : MonoBehaviour
                 //Food is exception, finds direct vector to food unless you can't eat it
                 if (colliders[i].gameObject.tag == "Food" && genome.FoodSkill.Effect > 0)
                 {
-                    objectCount[0]++;
-                    if (vectorToObject.magnitude < objectVectors[0].magnitude || objectVectors[0].magnitude == 0)
-                        objectVectors[0] = vectorToObject;
+                    targets[0].count++;
+                    if (vectorToObject.magnitude < targets[0].vector.magnitude || targets[0].vector.magnitude == 0)
+                        targets[0].vector = vectorToObject;
                 }
                 else if (colliders[i].gameObject.TryGetComponent<Bacterium>(out Bacterium other))
                 {
                     if (other.genome.genomeID == genome.genomeID)
                     {
-                        objectCount[3]++;
-                        objectVectors[3] += vectorToObject;
+                        targets[3].count++;
+                        targets[3].vector += vectorToObject;
                     }
                     //Pray is another exception, finds direct vector to pray
                     else if (other.genome.AttackSkill.Effect < genome.AttackSkill.Effect)
                     {
-                        objectCount[2]++;
-                        if (vectorToObject.magnitude < objectVectors[2].magnitude || objectVectors[2].magnitude == 0)
-                            objectVectors[2] = vectorToObject;
+                        targets[2].count++;
+                        if (vectorToObject.magnitude < targets[2].vector.magnitude || targets[2].vector.magnitude == 0)
+                            targets[2].vector = vectorToObject;
                     }
                     else
                     {
-                        objectCount[1]++;
-                        objectVectors[1] += vectorToObject;
+                        targets[1].count++;
+                        targets[1].vector += vectorToObject;
                     }
                 }
             }
+            targets[4].vector = birthPlace;
+            targets[4].count = 1;
             //Merges object count and vectors to create inputs for NN
             for (int i = 0; i < maxObject; i++)
             {
-                if (objectCount[i] > 0)
+                if (targets[i].count > 0)
                 {
                     //Food and pray are exceptions
                     if (i != 0 && i != 2)
-                        objectVectors[i] /= objectCount[i];
-                    inputs[i] = objectVectors[i].magnitude;
+                        targets[i].vector /= targets[i].count;
+                    inputs[i] = targets[i].vector.magnitude;
                 }
                 else
                 {
@@ -171,9 +175,9 @@ public class Bacterium : MonoBehaviour
             Vector2 target = new Vector2(0, 0);
             for (int i = 0; i < maxObject; i++)
             {
-                if (objectCount[i] > 0)
+                if (targets[i].count > 0)
                 {
-                    Vector2 objectDirection = new Vector2(objectVectors[i].x, objectVectors[i].y);
+                    Vector2 objectDirection = new Vector2(targets[i].vector.x, targets[i].vector.y);
                     objectDirection.Normalize();
                     target += objectDirection * outputs[i];
                 }
@@ -263,7 +267,7 @@ public class Bacterium : MonoBehaviour
         divisionEnergy = GameManager._instance.defaultDivisionEnergy * rigidBody.mass;
 
         //Sets NN based on genome
-        nn = new NN(maxObject, 8, maxObject);
+        nn = new NN(maxObject, maxObject * 2, maxObject);
         int genomeWeightCounter = 0;
         for (int l = 0; l < nn.layers.Length - 1; l++)
         {
@@ -276,6 +280,8 @@ public class Bacterium : MonoBehaviour
                 }
             }
         }
+
+        birthPlace = gameObject.transform.position;
     }
     public void Division()
     {
@@ -297,27 +303,34 @@ public class Bacterium : MonoBehaviour
     }
     private void OnDrawGizmosSelected()
     {
-        for (int i = 0; i < objectVectors.Length; i++)
+        for (int i = 0; i < targets.Length; i++)
         {
             switch(i)
             {
                 case 0:
                     Gizmos.color = Color.green;
+                    Gizmos.DrawLine(gameObject.transform.position, targets[i].vector + gameObject.transform.position);
                     break;
                 case 1:
                     Gizmos.color = Color.red;
+                    Gizmos.DrawLine(gameObject.transform.position, targets[i].vector + gameObject.transform.position);
                     break;
                 case 2:
                     Gizmos.color = Color.yellow;
+                    Gizmos.DrawLine(gameObject.transform.position, targets[i].vector + gameObject.transform.position);
                     break;
                 case 3:
                     Gizmos.color = Color.blue;
+                    Gizmos.DrawLine(gameObject.transform.position, targets[i].vector + gameObject.transform.position);
+                    break;
+                case 4:
+                    Gizmos.color = Color.magenta;
+                    Gizmos.DrawLine(gameObject.transform.position, targets[i].vector);
                     break;
                 default:
                     Gizmos.color = Color.white;
                     break;
             }
-            Gizmos.DrawLine(gameObject.transform.position, objectVectors[i] + gameObject.transform.position);
         }
         Gizmos.color = Color.white;
         Gizmos.DrawWireSphere(gameObject.transform.position, genome.VisionSkill.Effect);
