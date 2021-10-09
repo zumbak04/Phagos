@@ -33,12 +33,15 @@ public class Bacterium : MonoBehaviour
     //1 is enemy
     //2 is pray
     //3 is friend
-    private static int maxObject = 4;
+    //4 is birth place
+    private static int maxObject = 5;
     private float[] inputs = new float[maxObject];
     [SerializeField]
     private Target[] targets = new Target[maxObject];
 
     private Vector2 acceleration = new Vector2();
+    [SerializeField]
+    private Vector2 birthPlace;
 
     private GameObject filterMouthObject;
     private GameObject jawObject;
@@ -149,6 +152,8 @@ public class Bacterium : MonoBehaviour
                     }
                 }
             }
+            targets[4].vector = birthPlace;
+            targets[4].count = 1;
             //Merges object count and vectors to create inputs for NN
             for (int i = 0; i < maxObject; i++)
             {
@@ -262,7 +267,7 @@ public class Bacterium : MonoBehaviour
         divisionEnergy = GameManager.instance.defaultDivisionEnergy * rigidBody.mass;
 
         //Sets NN based on genome
-        nn = new NN(maxObject, 8, maxObject);
+        nn = new NN(maxObject, maxObject * 2, maxObject);
         int genomeWeightCounter = 0;
         for (int l = 0; l < nn.layers.Length - 1; l++)
         {
@@ -275,6 +280,8 @@ public class Bacterium : MonoBehaviour
                 }
             }
         }
+
+        birthPlace = gameObject.transform.position;
     }
     public void Division()
     {
@@ -302,21 +309,28 @@ public class Bacterium : MonoBehaviour
             {
                 case 0:
                     Gizmos.color = Color.green;
+                    Gizmos.DrawLine(gameObject.transform.position, targets[i].vector + gameObject.transform.position);
                     break;
                 case 1:
                     Gizmos.color = Color.red;
+                    Gizmos.DrawLine(gameObject.transform.position, targets[i].vector + gameObject.transform.position);
                     break;
                 case 2:
                     Gizmos.color = Color.yellow;
+                    Gizmos.DrawLine(gameObject.transform.position, targets[i].vector + gameObject.transform.position);
                     break;
                 case 3:
                     Gizmos.color = Color.blue;
+                    Gizmos.DrawLine(gameObject.transform.position, targets[i].vector + gameObject.transform.position);
+                    break;
+                case 4:
+                    Gizmos.color = Color.magenta;
+                    Gizmos.DrawLine(gameObject.transform.position, targets[i].vector);
                     break;
                 default:
                     Gizmos.color = Color.white;
                     break;
             }
-            Gizmos.DrawLine(gameObject.transform.position, targets[i].vector + gameObject.transform.position);
         }
         Gizmos.color = Color.white;
         Gizmos.DrawWireSphere(gameObject.transform.position, genome.VisionSkill.Effect);

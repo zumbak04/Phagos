@@ -4,7 +4,7 @@ public class Layer
     public int size;
     public Neuron[] neurons;
 
-    public float[] neuronValues
+    public float[] NeuronValues
     {
         get
         {

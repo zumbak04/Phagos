@@ -29,7 +29,7 @@ public class NN
     public float[] Calculate(float[] inputs)
     {
         //Passes inputs to the first layer
-        layers[0].neuronValues = inputs;
+        layers[0].NeuronValues = inputs;
 
         for (int i = 1; i < layers.Length; i++) 
         {
@@ -48,7 +48,7 @@ public class NN
             }
         }
 
-        return lastLayer.neuronValues;
+        return lastLayer.NeuronValues;
     }
 
 }
