@@ -166,7 +166,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9d1568bd8f9b1e3448a0765e33b80b24, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  message: Aaa!
+  message: 'Aaa!
+
+    <color=red>Aaa!</color>'
   onClick: 1
   onMouseOver: 0
 --- !u!1 &3505681932696426641

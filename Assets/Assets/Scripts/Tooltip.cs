@@ -2,6 +2,7 @@
 
 public class Tooltip : MonoBehaviour
 {
+    [TextArea(10, 10)]
     public string message;
 
     public bool onClick = false;
