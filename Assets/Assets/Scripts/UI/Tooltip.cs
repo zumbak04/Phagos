@@ -12,13 +12,13 @@ public class Tooltip : MonoBehaviour
     {
         if (Input.GetMouseButtonDown(0) && onClick)
         {
-            TooltipManager._instance.SetActiveTooltip(this, gameObject);
+            TooltipManager._instance.SetActiveTooltip(this);
         }
     }
     private void OnMouseEnter()
     {
         if(onMouseOver)
-            TooltipManager._instance.SetActiveTooltip(this, gameObject);
+            TooltipManager._instance.SetActiveTooltip(this);
     }
     private void OnMouseExit()
     {

@@ -36,7 +36,7 @@ public class TooltipManager : MonoBehaviour
         transform.position = cameraCom.WorldToScreenPoint(activeTooltip.gameObject.transform.position);
     }
 
-    public void SetActiveTooltip(Tooltip tooltip, GameObject gameObj)
+    public void SetActiveTooltip(Tooltip tooltip)
     {
         activeTooltip = tooltip;
         gameObject.SetActive(true);
