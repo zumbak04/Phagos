@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 3418474834506865306}
   - component: {fileID: 8072171648350698940}
   - component: {fileID: -989552980370481934}
+  - component: {fileID: -2364536291851554626}
   m_Layer: 0
   m_Name: BacteriumPrefab
   m_TagString: Untagged
@@ -169,6 +170,21 @@ MonoBehaviour:
   message: 'Aaa!
 
     <color=red>Aaa!</color>'
+  onClick: 1
+  onMouseOver: 0
+--- !u!114 &-2364536291851554626
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 515172945297576299}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a9d1cee6f096abf4da9e79cea5ee4df2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  message: 
   onClick: 1
   onMouseOver: 0
 --- !u!1 &3505681932696426641

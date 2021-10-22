@@ -8,10 +8,10 @@ public class TooltipManager : MonoBehaviour
     public static TooltipManager _instance;
 
     public TextMeshProUGUI textObj;
-    [HideInInspector]
-    public GameObject attachObj = null;
     public GameObject cameraObj;
     private Camera cameraCom;
+
+    private Tooltip activeTooltip;
 
     private void Awake()
     {
@@ -31,21 +31,19 @@ public class TooltipManager : MonoBehaviour
 
 	private void Update()
     {
-        if (attachObj != null)
-            transform.position = cameraCom.WorldToScreenPoint(attachObj.transform.position);
-        else
-            Hide();
+        textObj.text = activeTooltip.message;
+
+        transform.position = cameraCom.WorldToScreenPoint(activeTooltip.gameObject.transform.position);
     }
 
-    public void SetAndShow(string message, GameObject gameObj)
+    public void SetActiveTooltip(Tooltip tooltip, GameObject gameObj)
     {
-        attachObj = gameObj;
+        activeTooltip = tooltip;
         gameObject.SetActive(true);
-        textObj.text = message;
     }
-    public void Hide()
+    public void ClearActiveTooltip()
     {
-        attachObj = null;
+        activeTooltip = null;
         gameObject.SetActive(false);
         textObj.text = string.Empty;
     }

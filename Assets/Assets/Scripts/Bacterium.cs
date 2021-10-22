@@ -65,6 +65,8 @@ public class Bacterium : MonoBehaviour
         }
     }
 
+    public float Age => age;
+
     private void Awake()
     {
         rigidBody = gameObject.GetComponent<Rigidbody2D>();
