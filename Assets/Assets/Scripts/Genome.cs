@@ -23,16 +23,14 @@ public class Genome
         new Skill("Size", 5, 5, 0.2f) //Disabled for now
     };
 
-    public int SkillLevelSum
-    {
-        get => skills.Sum(x => x.Level);
-    }
+    public int SkillLevelSum => skills.Sum(x => x.Level);
 
-    public Skill SpeedSkill { get { return skills[0]; } set { skills[0] = value; } }
-    public Skill VisionSkill { get { return skills[1]; } set { skills[1] = value; } }
-    public Skill FoodSkill { get { return skills[2]; } set { skills[2] = value; } }
-    public Skill AttackSkill { get { return skills[3]; } set { skills[3] = value; } }
-    public Skill SizeSkill { get { return skills[4]; } set { skills[4] = value; } }
+    public Skill[] Skills => skills;
+    public Skill SpeedSkill => skills[0];
+    public Skill VisionSkill => skills[1];
+    public Skill FoodSkill => skills[2];
+    public Skill AttackSkill => skills[3];
+    public Skill SizeSkill => skills[4];
 
     public Genome(int size)
     {

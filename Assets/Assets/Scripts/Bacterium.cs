@@ -52,6 +52,10 @@ public class Bacterium : MonoBehaviour
 
     [SerializeField]
     private float _size = 1;
+
+    public float Age => age;
+    public float Energy => energy;
+    public Genome Genome => genome;
     public float Size
     {
         get
@@ -64,8 +68,6 @@ public class Bacterium : MonoBehaviour
             _size = value;
         }
     }
-
-    public float Age => age;
 
     private void Awake()
     {

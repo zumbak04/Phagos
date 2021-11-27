@@ -28,29 +28,13 @@ public class Skill
         _factor = parent.Factor;
     }
 
-    public float Percent
-    {
-        get => (float)_level / (float)_max;
-    }
-    public float Effect
-    {
-        get => _level * _factor;
-    }
-    public int Level {
-        get => _level;
-    }
-    public float Factor
-    {
-        get => _factor;
-    }
-    public int Min
-    {
-        get => _min;
-    }
-    public int Max
-    {
-        get => _max;
-    }
+    public string Name => _name;
+    public float Percent => (float)_level / (float)_max;
+    public float Effect => _level * _factor;
+    public int Level => _level;
+    public float Factor => _factor;
+    public int Min => _min;
+    public int Max => _max;
 
     public void ChangeLevel(int skillLevelSum, int change)
     {

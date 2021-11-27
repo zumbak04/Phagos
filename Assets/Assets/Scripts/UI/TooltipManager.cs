@@ -31,6 +31,12 @@ public class TooltipManager : MonoBehaviour
 
 	private void Update()
     {
+        if (activeTooltip == null)
+        {
+            ClearActiveTooltip();
+            return;
+        }
+
         textObj.text = activeTooltip.message;
 
         transform.position = cameraCom.WorldToScreenPoint(activeTooltip.gameObject.transform.position);

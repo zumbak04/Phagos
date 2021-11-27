@@ -12,6 +12,13 @@ public class BacteriumTooltip : Tooltip
     }
     public void Update()
     {
-        message =  $"{bacterium.Age}";
+        message = string.Empty;
+        message += $"Age: {string.Format("{0:0}", bacterium.Age)} sec(s)\n";
+        message += $"Energy: {string.Format("{0:0.0}", bacterium.Energy)}\n";
+        message += "\n";
+        foreach(Skill skill in bacterium.Genome.Skills)
+        {
+            message += $"{skill.Name}: <b>{skill.Level}</b>\n";
+        }
     }
 }
