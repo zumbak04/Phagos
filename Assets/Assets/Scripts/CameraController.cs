@@ -4,7 +4,9 @@ using UnityEngine;
 
 public class CameraController : MonoBehaviour
 {
-    Camera cameraObj;
+    Camera cam;
+
+    GameObject focusObj;
 
     [SerializeField]
     //bool isPanning;
@@ -38,15 +40,21 @@ public class CameraController : MonoBehaviour
 
     private void Awake()
     {
-        cameraObj = gameObject.GetComponent<Camera>();
+        cam = gameObject.GetComponent<Camera>();
     }
 
     void Update()
     {
         Vector3 pos = transform.position;
 
+        if (focusObj != null)
+        {
+            pos.x = focusObj.transform.position.x;
+            pos.y = focusObj.transform.position.y;
+        }
+
         //Pan
-        if (!isDragging)
+        if (!isDragging && focusObj == null)
         {
             Vector3 screenCenter = new Vector3(Screen.width / 2, Screen.height / 2, 0);
             moveDirection = Input.mousePosition - screenCenter;
@@ -72,26 +80,37 @@ public class CameraController : MonoBehaviour
 
         //Drag
         if (Input.GetMouseButtonDown(2))
-            dragOrigin = cameraObj.ScreenToWorldPoint(Input.mousePosition);
+            dragOrigin = cam.ScreenToWorldPoint(Input.mousePosition);
         if (Input.GetMouseButton(2))
         {
             isDragging = true;
 
-            Vector3 dragMove = cameraObj.ScreenToWorldPoint(Input.mousePosition) - dragOrigin;
+            Vector3 dragMove = cam.ScreenToWorldPoint(Input.mousePosition) - dragOrigin;
             pos -= dragMove * dragSpeed;
+
+            StopFocusCamera();
         }
         else
             isDragging = false;
 
         //Scroll
-        cameraObj.orthographicSize -= Input.GetAxis("Mouse ScrollWheel") * scrollSpeed * Time.deltaTime;
-        cameraObj.orthographicSize = Mathf.Clamp(cameraObj.orthographicSize, minCameraSize, maxCameraSize);
+        cam.orthographicSize -= Input.GetAxis("Mouse ScrollWheel") * scrollSpeed * Time.deltaTime;
+        cam.orthographicSize = Mathf.Clamp(cam.orthographicSize, minCameraSize, maxCameraSize);
 
         //Borders
-        float cameraSize = cameraObj.orthographicSize;
+        float cameraSize = cam.orthographicSize;
         pos.x = Mathf.Clamp(pos.x, -(GameManager._instance.gameArea.x - cameraSize), GameManager._instance.gameArea.x - cameraSize);
         pos.y = Mathf.Clamp(pos.y, -(GameManager._instance.gameArea.y - cameraSize), GameManager._instance.gameArea.y - cameraSize);
 
         transform.position = pos;
+    }
+
+    public void FocusCameraOn(GameObject obj)
+    {
+        focusObj = obj;
+    }
+    public void StopFocusCamera()
+    {
+        focusObj = null;
     }
 }

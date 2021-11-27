@@ -5,24 +5,12 @@ public class Tooltip : MonoBehaviour
     [TextArea(10, 10)]
     public string message;
 
-    public bool onClick = false;
-    public bool onMouseOver = false;
-
     private void OnMouseDown()
     {
-        if (Input.GetMouseButtonDown(0) && onClick)
+        if (Input.GetMouseButtonDown(0))
         {
             TooltipManager._instance.SetActiveTooltip(this);
+            GameManager._instance.camCtrl.FocusCameraOn(gameObject);
         }
-    }
-    private void OnMouseEnter()
-    {
-        if(onMouseOver)
-            TooltipManager._instance.SetActiveTooltip(this);
-    }
-    private void OnMouseExit()
-    {
-        if (onMouseOver)
-            TooltipManager._instance.ClearActiveTooltip();
     }
 }

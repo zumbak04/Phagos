@@ -42,6 +42,7 @@ public class GameManager : MonoBehaviour
 
     private int SpawnFoodPerTick => Mathf.RoundToInt(Mathf.Max(StartNumberOfFood / 15, 1) * spawnFoodTickDelay);
     public int NumberOfNeurons => maxObject * maxObject * 4;
+    public CameraController camCtrl;
 
     void Start()
     {
@@ -51,6 +52,8 @@ public class GameManager : MonoBehaviour
             Destroy(gameObject);
 
         DontDestroyOnLoad(gameObject);
+
+        camCtrl = gameObject.GetComponent<CameraController>();
 
         foodHolder = new GameObject("Food Holder").transform;
         bacteriumHolder = new GameObject("Bacterium Holder").transform;

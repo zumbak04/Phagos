@@ -674,7 +674,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   gameArea: {x: 120, y: 120}
-  StartNumberOfFood: 3000
+  StartNumberOfFood: 1500
   StartNumberOfBacteria: 400
   mutationBeforeNewID: 10
   energyPerSecondLoss: 0.25
@@ -688,6 +688,8 @@ MonoBehaviour:
   recentGenomeID: 0
   recentBacteriumID: 0
   AITickDelay: 0.1
+  maxObject: 5
+  camCtrl: {fileID: 0}
 --- !u!114 &1148454233
 MonoBehaviour:
   m_ObjectHideFlags: 0
