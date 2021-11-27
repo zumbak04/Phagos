@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 public class GameManager : MonoBehaviour
 {
-    public static GameManager instance = null;
+    public static GameManager _instance = null;
 
     public Vector2 gameArea;
     public int StartNumberOfFood = 2000;
@@ -40,9 +40,9 @@ public class GameManager : MonoBehaviour
 
     void Start()
     {
-        if (instance == null)
-            instance = this;
-        else if (instance != this)
+        if (_instance == null)
+            _instance = this;
+        else if (_instance != this)
             Destroy(gameObject);
 
         DontDestroyOnLoad(gameObject);

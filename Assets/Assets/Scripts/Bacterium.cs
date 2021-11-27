@@ -52,6 +52,10 @@ public class Bacterium : MonoBehaviour
 
     [SerializeField]
     private float _size = 1;
+
+    public float Age => age;
+    public float Energy => energy;
+    public Genome Genome => genome;
     public float Size
     {
         get
@@ -73,7 +77,7 @@ public class Bacterium : MonoBehaviour
         flagellasObject = gameObject.transform.GetChild(2).gameObject;
         eyesObject = gameObject.transform.GetChild(3).gameObject;
 
-        immunityCooldown = GameManager.instance.immunityCooldown;
+        immunityCooldown = GameManager._instance.immunityCooldown;
 
         if (energy == 0) energy = startEnergy;
     }
@@ -186,7 +190,7 @@ public class Bacterium : MonoBehaviour
 
             acceleration = target * genome.SpeedSkill.Effect;
 
-            yield return new WaitForSeconds(GameManager.instance.AITickDelay);
+            yield return new WaitForSeconds(GameManager._instance.AITickDelay);
         }
     }
 
@@ -220,7 +224,7 @@ public class Bacterium : MonoBehaviour
             if (genome.genomeID == other.genome.genomeID) return;
 
             //Adds attack cooldown
-            attackCooldown += GameManager.instance.attackCooldown;
+            attackCooldown += GameManager._instance.attackCooldown;
 
             //Deals damage, steals energy
             float damage = Mathf.Max(0f,genome.AttackSkill.Effect);
@@ -263,8 +267,8 @@ public class Bacterium : MonoBehaviour
 
         //Size
         Size = genome.SizeSkill.Effect;
-        rigidBody.mass = GameManager.instance.CountMass(rigidBody);
-        divisionEnergy = GameManager.instance.defaultDivisionEnergy * rigidBody.mass;
+        rigidBody.mass = GameManager._instance.CountMass(rigidBody);
+        divisionEnergy = GameManager._instance.defaultDivisionEnergy * rigidBody.mass;
 
         //Sets NN based on genome
         nn = new NN(maxObject, maxObject * 2, maxObject);
@@ -288,13 +292,13 @@ public class Bacterium : MonoBehaviour
         energy *= 0.5f;
         Genome childGenome = new Genome(genome);
         childGenome.Mutate(0.5f);
-        Bacterium childBacterium = GameManager.instance.SpawnBacterium(rigidBody.transform.position,childGenome);
+        Bacterium childBacterium = GameManager._instance.SpawnBacterium(rigidBody.transform.position,childGenome);
         childBacterium.energy = energy;
     }
     public void SpendEnergy()
     {
         //Spends energy
-        energyCost = Time.deltaTime * (GameManager.instance.energyPerSecondLoss + rigidBody.mass * GameManager.instance.energyPerSizeLoss);
+        energyCost = Time.deltaTime * (GameManager._instance.energyPerSecondLoss + rigidBody.mass * GameManager._instance.energyPerSizeLoss);
         energy -= energyCost;
 
         //If energy is low, dies
@@ -352,7 +356,7 @@ public class Bacterium : MonoBehaviour
 
     public void TakeDamage(float damage)
     {
-        immunityCooldown += GameManager.instance.immunityCooldown;
+        immunityCooldown += GameManager._instance.immunityCooldown;
 
         energy -= damage;
 
