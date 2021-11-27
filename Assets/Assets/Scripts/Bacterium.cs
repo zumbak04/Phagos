@@ -223,7 +223,7 @@ public class Bacterium : MonoBehaviour
             attackCooldown += GameManager._instance.attackCooldown;
 
             //Deals damage, steals energy
-            float damage = Mathf.Max(0f,genome.AttackSkill.Effect);
+            float damage = Mathf.Max(0f, genome.AttackSkill.Effect);
             damage = Mathf.Min(damage, other.energy);
             Eat(damage);
             other.TakeDamage(damage);
@@ -288,7 +288,7 @@ public class Bacterium : MonoBehaviour
         energy *= 0.5f;
         Genome childGenome = new Genome(genome);
         childGenome.Mutate(0.5f);
-        Bacterium childBacterium = GameManager._instance.SpawnBacterium(rigidBody.transform.position,childGenome);
+        Bacterium childBacterium = GameManager._instance.SpawnBacterium(rigidBody.transform.position, childGenome);
         childBacterium.energy = energy;
     }
     public void SpendEnergy()
@@ -305,7 +305,7 @@ public class Bacterium : MonoBehaviour
     {
         for (int i = 0; i < targets.Length; i++)
         {
-            switch(i)
+            switch (i)
             {
                 case 0:
                     Gizmos.color = Color.green;
