@@ -33,10 +33,15 @@ public class GameManager : MonoBehaviour
     private float spawnFoodTickDelay = 0.25f;
     public float AITickDelay = 0.5f;
 
-    private int SpawnFoodPerTick
-    {
-        get => Mathf.RoundToInt(Mathf.Max(StartNumberOfFood / 15, 1) * spawnFoodTickDelay);
-    }
+    //0 is food
+    //1 is enemy
+    //2 is pray
+    //3 is friend
+    //4 is birth place
+    public int maxObject = 5;
+
+    private int SpawnFoodPerTick => Mathf.RoundToInt(Mathf.Max(StartNumberOfFood / 15, 1) * spawnFoodTickDelay);
+    public int NumberOfNeurons => maxObject * maxObject * 4;
 
     void Start()
     {
@@ -52,7 +57,7 @@ public class GameManager : MonoBehaviour
 
         for (int i = 0; i < StartNumberOfBacteria; i++)
         {
-            Genome genome = new Genome(100);
+            Genome genome = new Genome(NumberOfNeurons);
             Vector2 spawnPoint = new Vector2(Random.Range(-gameArea.x, gameArea.x), Random.Range(-gameArea.y, gameArea.y));
             SpawnBacterium(spawnPoint, genome);
         }

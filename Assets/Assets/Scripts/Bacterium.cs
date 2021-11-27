@@ -28,16 +28,9 @@ public class Bacterium : MonoBehaviour
     [SerializeField]
     private Genome genome;
 
-    //Objects around
-    //0 is food
-    //1 is enemy
-    //2 is pray
-    //3 is friend
-    //4 is birth place
-    private static int maxObject = 5;
-    private float[] inputs = new float[maxObject];
+    private float[] inputs;
     [SerializeField]
-    private Target[] targets = new Target[maxObject];
+    private Target[] targets;
 
     private Vector2 acceleration = new Vector2();
     [SerializeField]
@@ -76,6 +69,9 @@ public class Bacterium : MonoBehaviour
         jawObject = gameObject.transform.GetChild(1).gameObject;
         flagellasObject = gameObject.transform.GetChild(2).gameObject;
         eyesObject = gameObject.transform.GetChild(3).gameObject;
+
+        inputs = new float[GameManager._instance.maxObject];
+        targets = new Target[GameManager._instance.maxObject];
 
         immunityCooldown = GameManager._instance.immunityCooldown;
 
@@ -159,7 +155,7 @@ public class Bacterium : MonoBehaviour
             targets[4].vector = birthPlace;
             targets[4].count = 1;
             //Merges object count and vectors to create inputs for NN
-            for (int i = 0; i < maxObject; i++)
+            for (int i = 0; i < GameManager._instance.maxObject; i++)
             {
                 if (targets[i].count > 0)
                 {
@@ -177,7 +173,7 @@ public class Bacterium : MonoBehaviour
             //NN tells how to react to every object vector, merges them to set target
             float[] outputs = nn.Calculate(inputs);
             Vector2 target = new Vector2(0, 0);
-            for (int i = 0; i < maxObject; i++)
+            for (int i = 0; i < GameManager._instance.maxObject; i++)
             {
                 if (targets[i].count > 0)
                 {
@@ -271,7 +267,7 @@ public class Bacterium : MonoBehaviour
         divisionEnergy = GameManager._instance.defaultDivisionEnergy * rigidBody.mass;
 
         //Sets NN based on genome
-        nn = new NN(maxObject, maxObject * 2, maxObject);
+        nn = new NN(GameManager._instance.maxObject, GameManager._instance.maxObject * 2, GameManager._instance.maxObject);
         int genomeWeightCounter = 0;
         for (int l = 0; l < nn.layers.Length - 1; l++)
         {
