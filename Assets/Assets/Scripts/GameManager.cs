@@ -43,6 +43,20 @@ public class GameManager : MonoBehaviour
     private int SpawnFoodPerTick => Mathf.RoundToInt(Mathf.Max(StartNumberOfFood / 15, 1) * spawnFoodTickDelay);
     public int NumberOfNeurons => maxObject * maxObject * 4;
     public CameraController camCtrl;
+    public float LargestGameAreaEdge
+    {
+        get
+        {
+            if(gameArea.x > gameArea.y)
+            {
+                return gameArea.x;
+            }
+            else
+            {
+                return gameArea.y;
+            }
+        }
+    }
 
     void Start()
     {
