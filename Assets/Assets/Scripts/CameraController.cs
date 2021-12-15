@@ -42,6 +42,10 @@ public class CameraController : MonoBehaviour
     {
         cam = gameObject.GetComponent<Camera>();
     }
+    private void Start()
+    {
+        maxCameraSize = GameManager._instance.LargestGameAreaEdge;
+    }
 
     void Update()
     {
